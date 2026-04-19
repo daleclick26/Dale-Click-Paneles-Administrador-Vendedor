@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuración | Dale Click</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/configuracion.css" />
+</head>
+<body>
+  <div class="layout">
+    <%- include('../partials/sidebar', { activePage: 'configuracion' }) %>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="seccion-configuracion">
+        <div class="panel-superior-configuracion">
+          <div class="columna-principal-configuracion">
+            <form id="formConfiguracionUsuario" class="bloque-configuracion bloque-emprendedor">
+              <div class="cabecera-bloque-config">
+                <div>
+                  <h2>Información del Emprendedor</h2>
+                </div>
+              </div>
+
+              <div class="grid-configuracion-emprendedor">
+                <div class="fila-campo-config">
+                  <span class="icono-campo">👤</span>
+                  <div class="campo-contenido">
+                    <label>Username</label>
+                    <input type="text" id="username" name="username" value="<%= usuario?.username || '' %>" disabled />
+                  </div>
+                  <button type="button" class="boton-editar-config bloqueado" title="No editable">🔒</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">👤</span>
+                  <div class="campo-contenido">
+                    <label>First Name</label>
+                    <input type="text" id="firstName" name="firstName" value="<%= usuario?.firstName || '' %>" disabled />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="firstName">✎</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">👤</span>
+                  <div class="campo-contenido">
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" name="lastName" value="<%= usuario?.lastName || '' %>" disabled />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="lastName">✎</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">✉️</span>
+                  <div class="campo-contenido">
+                    <label>Email</label>
+                    <input type="email" id="email" name="email" value="<%= usuario?.email || '' %>" disabled />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="email">✎</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">📞</span>
+                  <div class="campo-contenido">
+                    <label>Phone</label>
+                    <input type="text" id="phone" name="phone" value="<%= usuario?.phone || '' %>" disabled />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="phone">✎</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">🪪</span>
+                  <div class="campo-contenido">
+                    <label>National ID</label>
+                    <input type="text" id="nationalID" name="nationalID" value="<%= usuario?.nationalID || '' %>" disabled />
+                  </div>
+                  <button type="button" class="boton-editar-config bloqueado" title="No editable">🔒</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">📸</span>
+                  <div class="campo-contenido">
+                    <label>Instagram</label>
+                    <input
+                      type="text"
+                      id="instagram"
+                      name="instagram"
+                      value="<%= businessProfile?.instagram || '' %>"
+                      placeholder="@tuusuario"
+                      disabled
+                    />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="instagram">✎</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">📘</span>
+                  <div class="campo-contenido">
+                    <label>Facebook</label>
+                    <input
+                      type="text"
+                      id="facebook"
+                      name="facebook"
+                      value="<%= businessProfile?.facebook || '' %>"
+                      placeholder="facebook.com/tu-pagina"
+                      disabled
+                    />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="facebook">✎</button>
+                </div>
+
+                <div class="fila-campo-config">
+                  <span class="icono-campo">🎵</span>
+                  <div class="campo-contenido">
+                    <label>TikTok</label>
+                    <input
+                      type="text"
+                      id="tiktok"
+                      name="tiktok"
+                      value="<%= businessProfile?.tiktok || '' %>"
+                      placeholder="@tiktok"
+                      disabled
+                    />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="tiktok">✎</button>
+                </div>
+
+                <div class="fila-campo-config fila-campo-ancha">
+                  <span class="icono-campo">🔑</span>
+                  <div class="campo-contenido">
+                    <label>Password</label>
+                    <input type="text" id="password" name="password" value="<%= usuario?.password || '' %>" disabled />
+                  </div>
+                  <button type="button" class="boton-editar-config" data-target="password">✎</button>
+                </div>
+              </div>
+
+              <div class="acciones-configuracion acciones-configuracion-superior">
+                <button type="button" id="guardarConfiguracion" class="boton-guardar-config" disabled>Guardar cambios</button>
+                <button type="button" id="cancelarConfiguracion" class="boton-cancelar-config">Cancelar</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="columna-secundaria-configuracion">
+            <div class="bloque-foto-perfil premium-card">
+              <div class="foto-header">
+                <h2>Foto del usuario</h2>
+              </div>
+
+              <div class="marco-foto">
+                <img
+                  src="<%= usuario?.profileImageURL ? usuario.profileImageURL + '?t=' + Date.now() : '/images/perfil-usuario.png' %>"
+                  alt="Foto de perfil"
+                  id="previewFotoPerfil"
+                  onerror="this.src='/images/perfil-usuario.png'"
+                />
+              </div>
+
+              <label for="inputFotoPerfil" class="boton-cambiar-foto">
+                Cambiar foto de perfil
+              </label>
+              <input type="file" id="inputFotoPerfil" accept="image/*" hidden />
+            </div>
+
+            <div class="bloque-configuracion bloque-estudiante">
+              <div class="cabecera-bloque-config">
+                <div>
+                  <h2>Perfil Estudiante</h2>
+                </div>
+              </div>
+
+              <div class="fila-campo-config simple">
+                <span class="icono-campo">🎓</span>
+                <div class="campo-contenido">
+                  <label>University Name</label>
+                  <input type="text" value="<%= studentProfile?.universityName || '' %>" disabled />
+                </div>
+              </div>
+
+              <div class="fila-campo-config simple">
+                <span class="icono-campo">🪪</span>
+                <div class="campo-contenido">
+                  <label>Student ID Code</label>
+                  <input type="text" value="<%= studentProfile?.studentIDCode || '' %>" disabled />
+                </div>
+              </div>
+
+              <div class="fila-campo-config simple">
+                <span class="icono-campo">🧑‍🎓</span>
+                <div class="campo-contenido">
+                  <label>Career</label>
+                  <input type="text" value="<%= studentProfile?.career || '' %>" disabled />
+                </div>
+              </div>
+
+              <div class="bloque-status">
+                <label>Status</label>
+                <div class="status-lista">
+                  <% if (studentProfile) { %>
+                    <span class="estado-chip <%= studentProfile.isStudentVerified ? 'activo' : 'revision' %>">
+                      <%= studentProfile.isStudentVerified ? 'Activo' : 'En Revisión' %>
+                    </span>
+                  <% } else { %>
+                    <span class="estado-chip revision">Sin perfil estudiante</span>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-inferior-configuracion">
+          <section class="bloque-suscripcion-planes">
+            <div class="cabecera-bloque-config">
+              <div>
+                <h2>Planes de Suscripción</h2>
+              </div>
+            </div>
+
+            <div class="lista-planes">
+              <% (planes || []).forEach((plan) => { %>
+                <div class="fila-plan">
+                  <div class="detalle-plan">
+                    <span class="nombre-plan"><%= plan.planName %></span>
+                    <small>C$<%= Number(plan.price).toFixed(2) %> · <%= plan.durationDays %> días</small>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="boton-solicitar"
+                    data-plan-id="<%= plan.planID %>"
+                    data-plan-name="<%= plan.planName %>"
+                  >
+                    Solicitar
+                  </button>
+                </div>
+              <% }) %>
+            </div>
+          </section>
+
+          <section class="bloque-historial-suscripciones">
+            <div class="cabecera-bloque-config">
+              <div>
+                <h2>Historial de Suscripciones</h2>
+              </div>
+            </div>
+
+            <div class="contenedor-tabla-config">
+              <table class="tabla-suscripciones">
+                <thead>
+                  <tr>
+                    <th>ID Suscripción</th>
+                    <th>Plan</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Fecha de Finalización</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <% if (historialSuscripciones && historialSuscripciones.length > 0) { %>
+                    <% historialSuscripciones.forEach((item) => { %>
+                      <tr>
+                        <td><%= item.subscriptionID %></td>
+                        <td><%= item.planName %></td>
+                        <td><%= item.startDate ? new Date(item.startDate).toISOString().split('T')[0] : 'N/D' %></td>
+                        <td><%= item.endDate ? new Date(item.endDate).toISOString().split('T')[0] : 'N/D' %></td>
+                        <td>
+                          <span class="estado-tabla <%= (item.status || '').toLowerCase() === 'activo' ? 'activo' : (item.status || '').toLowerCase() === 'cancelado' ? 'cancelado' : 'revision' %>">
+                            <%= item.status || 'Pendiente' %>
+                          </span>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="5" class="sin-resultados">No hay suscripciones registradas.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalSolicitarPlanOverlay">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h2>Solicitar Plan</h2>
+        <button type="button" class="modal-cerrar" data-close-modal="modalSolicitarPlanOverlay">×</button>
+      </div>
+
+      <form id="formSolicitarPlan" class="form-modal">
+        <input type="hidden" id="solicitudPlanID" name="planID" />
+
+        <div class="grupo-campo">
+          <label for="solicitudPlanNombre">Plan</label>
+          <input type="text" id="solicitudPlanNombre" name="planName" readonly />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="solicitudMensaje">Mensaje</label>
+          <textarea id="solicitudMensaje" name="message" rows="5" required></textarea>
+        </div>
+
+        <div class="modal-acciones">
+          <button type="button" class="boton-secundario" data-close-modal="modalSolicitarPlanOverlay">Cancelar</button>
+          <button type="submit" class="boton-primario">Enviar solicitud</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/configuracion.js"></script>
+</body>
+</html>

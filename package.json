@@ -1,0 +1,35 @@
+{
+  "name": "dale-click",
+  "version": "1.0.0",
+  "description": "Marketplace Dale Click",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/server.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.4.1",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "multer": "^2.1.1",
+    "mysql2": "^3.21.1",
+    "nodemailer": "^8.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avaleria13/dale-click-marketplace.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/avaleria13/dale-click-marketplace/issues"
+  },
+  "homepage": "https://github.com/avaleria13/dale-click-marketplace#readme"
+}

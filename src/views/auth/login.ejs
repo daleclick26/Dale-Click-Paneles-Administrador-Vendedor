@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Dale Click</title>
+  <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+
+  <div class="login-container">
+
+    <div class="shape shape-top-left"></div>
+    <div class="shape shape-top-right"></div>
+    <div class="shape shape-bottom-left"></div>
+    <div class="shape shape-bottom-right"></div>
+    <div class="shape-line shape-line-1"></div>
+    <div class="shape-line shape-line-2"></div>
+    <div class="shape-line shape-line-3"></div>
+
+    <div class="logo">
+      <img src="/images/logo_daleclick.png" alt="Dale Click">
+    </div>
+
+    <div class="paneles">
+      <div class="panel admin" onclick="selectRole('admin')">
+        <h2>Administrador</h2>
+        <p>Controla el sistema, supervisa operaciones y gestiona el acceso de la plataforma.</p>
+        <img src="/images/admin.png" alt="Admin Icon" class="panel-icon">
+        <span class="panel-badge">Panel de control</span>
+      </div>
+
+      <div class="panel vendedor" onclick="selectRole('vendedor')">
+        <h2>Vendedor</h2>
+        <p>Gestiona productos, pedidos, clientes y el crecimiento de tu negocio.</p>
+        <img src="/images/vendedor.png" alt="Vendedor Icon" class="panel-icon">
+        <span class="panel-badge">Portal emprendedor</span>
+      </div>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form
+      id="loginForm"
+      action="/login"
+      method="POST"
+      class="form <%= showReset ? 'hidden' : (role ? '' : 'hidden') %>"
+    >
+      <input type="hidden" name="role" id="role" value="<%= role || '' %>">
+
+      <h3 class="form-title">Bienvenido de nuevo</h3>
+      <p class="form-subtitle">Selecciona tu panel e ingresa tus credenciales para continuar.</p>
+      <% if (error) { %>
+        <p class="error-message"><%= error %></p>
+      <% } %>
+
+      <input type="text" name="username" placeholder="Usuario" autocomplete="off" required>
+      <input type="password" name="password" placeholder="Contraseña" required>
+
+      <button type="submit" id="btnLogin">
+        <%= role === 'vendedor' ? 'Ingresar como Vendedor' : role === 'admin' ? 'Ingresar como Administrador' : 'Ingresar' %>
+      </button>
+
+      <a href="#" id="forgotLink">¿Olvidaste tu contraseña?</a>
+    </form>
+
+    <!-- RESET FORM -->
+    <form
+      id="resetForm"
+      action="/forgot-password"
+      method="POST"
+      class="form <%= showReset ? '' : 'hidden' %>"
+    >
+      <input type="hidden" name="resetRole" id="resetRole" value="<%= role || '' %>">
+
+      <h3 class="form-title">Restablecer contraseña</h3>
+      <p class="form-subtitle">
+        Ingresa tu correo y tu nueva contraseña para recuperar el acceso.
+      </p>
+
+      <% if (errorReset) { %>
+        <p class="error-message"><%= errorReset %></p>
+      <% } %>
+
+      <% if (successReset) { %>
+        <p class="success-message"><%= successReset %></p>
+      <% } %>
+
+      <input type="email" name="resetEmail" id="resetEmail" placeholder="Email" required>
+      <input type="password" name="resetPassword" placeholder="Nueva contraseña" required>
+      <input type="password" name="resetConfirmPassword" placeholder="Confirmar nueva contraseña" required>
+
+      <button type="submit">Guardar nueva contraseña</button>
+      <a href="#" id="backToLoginLink" class="secondary-link">Volver al login</a>
+    </form>
+
+    <div class="decor-line"></div>
+  </div>
+
+  <script src="/js/login.js"></script>
+
+  <script>
+    const forgotLink = document.getElementById('forgotLink');
+    const backToLoginLink = document.getElementById('backToLoginLink');
+    const loginForm = document.getElementById('loginForm');
+    const resetForm = document.getElementById('resetForm');
+    const roleInput = document.getElementById('role');
+    const resetRoleInput = document.getElementById('resetRole');
+    const btnLogin = document.getElementById('btnLogin');
+
+    forgotLink.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const selectedRole = roleInput.value;
+
+      if (!selectedRole) {
+        alert('Primero selecciona un panel: Administrador o Vendedor.');
+        return;
+      }
+
+      resetRoleInput.value = selectedRole;
+      loginForm.classList.add('hidden');
+      resetForm.classList.remove('hidden');
+    });
+
+    backToLoginLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      resetForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+    });
+
+    if (typeof selectRole === 'function') {
+      const originalSelectRole = selectRole;
+
+      window.selectRole = function(role) {
+        originalSelectRole(role);
+
+        const selectedRoleText = role === 'vendedor'
+          ? 'Ingresar como Vendedor'
+          : 'Ingresar como Administrador';
+
+        if (btnLogin) btnLogin.textContent = selectedRoleText;
+        if (roleInput) roleInput.value = role;
+        if (resetRoleInput) resetRoleInput.value = role;
+
+        loginForm.classList.remove('hidden');
+        resetForm.classList.add('hidden');
+      };
+    }
+  </script>
+</body>
+</html>

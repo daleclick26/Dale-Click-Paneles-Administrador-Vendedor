@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/admin/usuarios-admin.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'usuarios' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+        <section class="usuarios-hero">
+          <div class="usuarios-hero__actions">
+            <button class="btn-primary" id="openCreateUserModal">
+              <img src="/images/agregar.png" alt="Crear Usuario"/>Crear Usuario</button>
+            <button class="btn-secondary" id="openCreateRoleModal">
+              <img src="/images/agregar.png" alt="Crear Rol"/>Crear Rol</button>
+            <button class="btn-secondary" id="openCreateStudentModal">
+              <img src="/images/agregar.png" alt="Crear Perfil de Estudiante"/>Crear Perfil de Estudiante</button>
+          </div>
+        </section>
+
+        <section class="usuarios-panel">
+          <div class="usuarios-toolbar">
+            <div class="search-box">
+              <span class="search-box__icon">⌕</span>
+              <input
+                type="text"
+                id="searchInput"
+                placeholder="Buscar por nombre, apellido o nationalID"
+              />
+            </div>
+
+            <div class="filter-box">
+              <label for="roleFilter">Filtrar por rol</label>
+              <select id="roleFilter">
+                <option value="">Todos</option>
+                <% roles.forEach(role => { %>
+                  <option value="<%= role.roleID %>"><%= role.roleName %></option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+
+          <div class="usuarios-feedback" id="feedbackMessage"></div>
+
+          <div class="usuarios-table-wrapper">
+            <table class="usuarios-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Email</th>
+                  <th>Teléfono</th>
+                  <th>Identificación</th>
+                  <th>Estado</th>
+                  <th>Rol</th>
+                  <th>Verificación</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="usuariosTableBody">
+                <tr>
+                  <td colspan="9" class="table-empty">Cargando usuarios...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+    </main>
+  </div>
+
+  <!-- Modal Crear Usuario -->
+  <div class="modal-backdrop hidden" id="createUserModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">Nuevo registro</span>
+          <h2>Crear usuario</h2>
+        </div>
+        <button class="modal-close" data-close-modal="createUserModal">&times;</button>
+      </div>
+
+      <form id="createUserForm" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="createUsername">Username</label>
+            <input type="text" id="createUsername" name="username" placeholder="Opcional, se genera automático" />
+          </div>
+
+          <div class="form-group">
+            <label for="createRoleID">Rol</label>
+            <select id="createRoleID" name="roleID" required>
+              <option value="">Selecciona un rol</option>
+              <% roles.forEach(role => { %>
+                <option value="<%= role.roleID %>"><%= role.roleName %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="createFirstName">Nombre</label>
+            <input type="text" id="createFirstName" name="firstName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="createLastName">Apellido</label>
+            <input type="text" id="createLastName" name="lastName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="createEmail">Email</label>
+            <input type="email" id="createEmail" name="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="createPhone">Teléfono</label>
+            <input type="text" id="createPhone" name="phone" />
+          </div>
+
+          <div class="form-group">
+            <label for="createNationalID">Identificación</label>
+            <input type="text" id="createNationalID" name="nationalID" required />
+          </div>
+
+          <div class="form-group">
+            <label for="createPassword">Contraseña</label>
+            <input type="text" id="createPassword" name="password" required />
+          </div>
+
+          <div class="form-group">
+            <label for="createStatus">Estado</label>
+            <select id="createStatus" name="status" required>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close-modal="createUserModal">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar usuario</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Editar Usuario -->
+  <div class="modal-backdrop hidden" id="editUserModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">Actualización</span>
+          <h2>Editar usuario</h2>
+        </div>
+        <button class="modal-close" data-close-modal="editUserModal">&times;</button>
+      </div>
+
+      <form id="editUserForm" class="modal-form">
+        <input type="hidden" id="editUserID" name="userID" />
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editFirstName">Nombre</label>
+            <input type="text" id="editFirstName" name="firstName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editLastName">Apellido</label>
+            <input type="text" id="editLastName" name="lastName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" name="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editPhone">Teléfono</label>
+            <input type="text" id="editPhone" name="phone" />
+          </div>
+
+          <div class="form-group">
+            <label for="editNationalID">Identificación</label>
+            <input type="text" id="editNationalID" name="nationalID" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editRoleID">Rol</label>
+            <select id="editRoleID" name="roleID" required>
+              <option value="">Selecciona un rol</option>
+              <% roles.forEach(role => { %>
+                <option value="<%= role.roleID %>"><%= role.roleName %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editStatus">Estado</label>
+            <select id="editStatus" name="status" required>
+              <option value="Activo">Activo</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close-modal="editUserModal">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Crear Rol -->
+  <div class="modal-backdrop hidden" id="createRoleModal">
+    <div class="modal-card modal-card--small">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">Configuración</span>
+          <h2>Crear rol</h2>
+        </div>
+        <button class="modal-close" data-close-modal="createRoleModal">&times;</button>
+      </div>
+
+      <form id="createRoleForm" class="modal-form">
+        <div class="form-grid form-grid--single">
+          <div class="form-group">
+            <label for="createRoleName">Nombre del rol</label>
+            <input type="text" id="createRoleName" name="roleName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="createRoleDescription">Descripción</label>
+            <textarea id="createRoleDescription" name="description" rows="4"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close-modal="createRoleModal">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar rol</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Crear Perfil de Estudiante -->
+  <div class="modal-backdrop hidden" id="createStudentModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <span class="modal-kicker">Perfil académico</span>
+          <h2>Crear perfil de estudiante</h2>
+        </div>
+        <button class="modal-close" data-close-modal="createStudentModal">&times;</button>
+      </div>
+
+      <form id="createStudentForm" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="studentUserID">Usuario</label>
+            <select id="studentUserID" name="userID" required>
+              <option value="">Selecciona un usuario</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="studentUniversityID">Universidad</label>
+            <select id="studentUniversityID" name="universityID" required>
+              <option value="">Selecciona una universidad</option>
+              <% universities.forEach(university => { %>
+                <option value="<%= university.universityID %>"><%= university.universityName %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="studentIDCode">Carné estudiantil</label>
+            <input type="text" id="studentIDCode" name="studentIDCode" required />
+          </div>
+
+          <div class="form-group">
+            <label for="studentCareer">Carrera</label>
+            <input type="text" id="studentCareer" name="career" required />
+          </div>
+
+          <div class="form-group">
+            <label for="studentVerified">Verificación</label>
+            <select id="studentVerified" name="isStudentVerified" required>
+              <option value="1">Verificado</option>
+              <option value="0">Pendiente</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" data-close-modal="createStudentModal">Cancelar</button>
+          <button type="submit" class="btn-primary">Guardar perfil</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script id="usuarios-roles-data" type="application/json"><%- JSON.stringify(roles || []) %></script>
+  <script id="usuarios-universities-data" type="application/json"><%- JSON.stringify(universities || []) %></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/usuarios-admin.js"></script>
+</body>
+</html>

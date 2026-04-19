@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tablero | Dale Click</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/tablero.css" />
+</head>
+<body>
+  <div class="layout">
+    <%- include('../partials/sidebar', { activePage: 'tablero' }) %>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section
+        class="seccion-tablero"
+        data-periodo="<%= periodo || '30' %>"
+        data-chart-ventas='<%- JSON.stringify(charts?.ventasPorMes || []) %>'
+        data-chart-estados='<%- JSON.stringify(charts?.pedidosPorEstado || []) %>'
+      >
+        <div class="encabezado-tablero">
+          <div>
+            <h1>¡Bienvenida de nuevo, <%= usuario?.firstName || 'Emprendedora' %>!</h1>
+            <p>Resumen del tablero</p>
+          </div>
+
+          <div class="acciones-tablero-superior">
+            <select id="filtroPeriodoTablero" class="select-periodo-tablero">
+              <option value="7" <%= periodo === '7' ? 'selected' : '' %>>Últimos 7 días</option>
+              <option value="30" <%= periodo === '30' ? 'selected' : '' %>>Últimos 30 días</option>
+              <option value="90" <%= periodo === '90' ? 'selected' : '' %>>Últimos 90 días</option>
+            </select>
+          </div>
+        </div>
+
+        <section class="tarjetas-resumen">
+          <article class="tarjeta-resumen">
+            <div class="tarjeta-top">
+              <h2>Productos totales</h2>
+              <a class="boton-exportar" href="/tablero/export/resumen?periodo=<%= periodo || '30' %>">CSV</a>
+            </div>
+            <p class="numero-principal"><%= resumen?.totalProductos ?? 0 %></p>
+            <span>Productos registrados del negocio</span>
+          </article>
+
+          <article class="tarjeta-resumen">
+            <div class="tarjeta-top">
+              <h2>Pedidos entregados</h2>
+              <a class="boton-exportar" href="/tablero/export/resumen?periodo=<%= periodo || '30' %>">CSV</a>
+            </div>
+            <p class="numero-principal"><%= resumen?.pedidosEntregados ?? 0 %></p>
+            <span>Pedidos completados en <%= periodoLabel || 'el período' %></span>
+          </article>
+
+          <article class="tarjeta-resumen">
+            <div class="tarjeta-top">
+              <h2>Ventas netas</h2>
+              <a class="boton-exportar" href="/tablero/export/ventas?periodo=<%= periodo || '30' %>">CSV</a>
+            </div>
+            <p class="numero-principal">C$ <%= Number(resumen?.ventasNetas || 0).toFixed(2) %></p>
+            <span>Ingresos por pedidos entregados</span>
+          </article>
+        </section>
+
+        <section class="tarjetas-secundarias">
+          <article class="mini-tarjeta">
+            <div class="mini-tarjeta-top">
+              <h3>Total de clientes</h3>
+              <a class="boton-exportar mini" href="/tablero/export/clientes?periodo=<%= periodo || '30' %>">CSV</a>
+            </div>
+            <p><%= resumen?.totalClientes ?? 0 %></p>
+          </article>
+
+          <article class="mini-tarjeta">
+            <h3>Nuevos clientes</h3>
+            <p><%= resumen?.nuevosClientes ?? 0 %></p>
+          </article>
+
+          <article class="mini-tarjeta">
+            <h3>Ticket promedio</h3>
+            <p>C$<%= Number(resumen?.ticketPromedio || 0).toFixed(2) %></p>
+          </article>
+
+          <article class="mini-tarjeta">
+            <h3>Clientes recurrentes</h3>
+            <p>
+              <%= resumen?.clientesRecurrentes ?? 0 %>
+              <span>/ <%= resumen?.porcentajeRecurrentes ?? 0 %>%</span>
+            </p>
+          </article>
+        </section>
+
+        <section class="graficos-tablero">
+          <article class="bloque-grafico">
+            <div class="grafico-header">
+              <h2>Ventas por mes</h2>
+              <a class="boton-exportar" href="/tablero/export/ventas?periodo=<%= periodo || '30' %>">CSV</a>
+            </div>
+            <div class="contenedor-canvas">
+              <canvas id="graficoVentasMes"></canvas>
+            </div>
+          </article>
+
+          <article class="bloque-grafico">
+            <div class="grafico-header">
+              <h2>Pedidos por estado</h2>
+              <a class="boton-exportar" href="/tablero/export/resumen?periodo=<%= periodo || '30' %>">CSV</a>
+            </div>
+            <div class="contenedor-canvas dona">
+              <canvas id="graficoPedidosEstado"></canvas>
+            </div>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/tablero.js"></script>
+</body>
+</html>

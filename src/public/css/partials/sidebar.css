@@ -1,0 +1,135 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 220px;
+  height: 100vh;
+  background: linear-gradient(180deg, #173a6a 0%, #123055 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0;
+  z-index: 1000;
+  box-shadow: 10px 0 30px rgba(10, 24, 44, 0.18);
+  overflow: hidden;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.logo-container {
+  background-color: #ffffff;
+  padding: 18px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  flex-shrink: 0;
+}
+
+.logo {
+  width: 150px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.menu-lateral {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px 12px;
+  overflow-y: auto;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  transform: translateX(3px);
+}
+
+.menu-item.activo {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.icono-menu {
+  width: 1.1em;
+  height: 1.1em;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(9,22,40,0.14) 100%);
+}
+
+.cerrar-sesion {
+  color: white;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 86px;
+  }
+
+  .logo-container {
+    height: 110px;
+    padding: 12px 8px;
+  }
+
+  .logo {
+    width: 58px;
+  }
+
+  .menu-item {
+    justify-content: center;
+    padding: 12px 10px;
+  }
+
+  .menu-item span {
+    display: none;
+  }
+
+  .sidebar-footer {
+    padding: 10px;
+  }
+}
+
+/* SIDEBAR COLAPSADA */
+.sidebar.collapsed {
+  width: 86px;
+}
+
+.sidebar.collapsed .menu-item span {
+  display: none;
+}
+
+.sidebar.collapsed .menu-item {
+  justify-content: center;
+}
+
+.sidebar.collapsed .logo {
+  width: 58px;
+}

@@ -1,0 +1,61 @@
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <div class="logo-container">
+      <img src="/images/logo_daleclick.png" alt="Logo Dale Click" class="logo" />
+    </div>
+
+    <nav class="menu-lateral">
+      <a href="/admin/tablero" class="menu-item <%= activePage === 'tablero' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/tablero.png" alt="Tablero" />
+        <span>Tablero</span>
+      </a>
+
+      <a href="/admin/usuarios" class="menu-item <%= activePage === 'usuarios' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/usuarios.png" alt="Usuarios" />
+        <span>Usuarios</span>
+      </a>
+
+      <a href="/admin/negocios" class="menu-item <%= activePage === 'negocios' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/perfil-comercial.png" alt="Negocios" />
+        <span>Negocios</span>
+      </a>
+
+      <a href="/admin/membresias" class="menu-item <%= activePage === 'membresias' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/membresias.png" alt="Membresías" />
+        <span>Membresías</span>
+      </a>
+
+      <a href="/admin/catalogo" class="menu-item <%= activePage === 'catalogo' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/catalogo.png" alt="Catálogo" />
+        <span>Catálogo</span>
+      </a>
+
+      <a href="/admin/verificaciones" class="menu-item <%= activePage === 'verificaciones' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/verificaciones.png" alt="Verificaciones" />
+        <span>Verificaciones</span>
+      </a>
+
+      <a href="/admin/reportes" class="menu-item <%= activePage === 'reportes' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/reportes.png" alt="Reportes" />
+        <span>Reportes</span>
+      </a>
+
+      <a href="/admin/evaluacion" class="menu-item <%= activePage === 'evaluacion' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/evaluaciones.png" alt="Evaluación" />
+        <span>Evaluación</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="/admin/configuracion" class="menu-item <%= activePage === 'configuracion' ? 'activo' : '' %>">
+      <img class="icono-menu" src="/images/configuracion.png" alt="Configuración" />
+      <span>Configuración</span>
+    </a>
+
+    <a href="/logout" class="menu-item cerrar-sesion" onclick="return confirm('Seguro que deseas cerrar sesión?')">
+      <img class="icono-menu" src="/images/cerrar-sesion.png" alt="Cerrar sesión" />
+      <span>Cerrar sesión</span>
+    </a>
+  </div>
+</aside>

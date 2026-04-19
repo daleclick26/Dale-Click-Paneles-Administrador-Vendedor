@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/partials/sidebar.css">
+  <link rel="stylesheet" href="/css/partials/topbar.css">
+  <link rel="stylesheet" href="/css/admin/negocios-admin.css">
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'negocios' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="negocios-page">
+          <div class="negocios-actions">
+            <button class="btn btn-primary" id="btnOpenCrearNegocio" type="button">
+              <img src="/images/agregar.png" alt="Crear" class="btn__icon"> Crear Nuevo Negocio
+            </button>
+
+            <button class="btn btn-secondary" id="btnOpenCrearUniversidad" type="button">
+              <img src="/images/agregar.png" alt="Agregar" class="btn__icon"> Agregar Universidad
+            </button>
+          </div>
+        </section>
+
+        <section class="negocios-panel">
+          <div class="negocios-filters">
+            <input class="negocios-input" type="text" id="search" placeholder="Buscar negocio o universidad">
+
+            <select class="negocios-input" id="tipo">
+              <option value="">Todos</option>
+              <option value="Universidad">Universidad</option>
+              <option value="Negocio Local">Negocio Local</option>
+            </select>
+
+            <input class="negocios-input" type="text" id="departamento" placeholder="Departamento">
+            <input class="negocios-input" type="text" id="ciudad" placeholder="Ciudad">
+
+            <button class="btn btn-primary" id="btnBuscar" type="button">Buscar</button>
+          </div>
+
+          <div class="table-container">
+            <table class="negocios-table">
+              <thead>
+                <tr>
+                  <th>Logo</th>
+                  <th>Negocio</th>
+                  <th>Departamento</th>
+                  <th>Ciudad</th>
+                  <th>Teléfono</th>
+                  <th>Email</th>
+                  <th>Universidad</th>
+                </tr>
+              </thead>
+              <tbody id="tablaNegocios"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal Crear Negocio -->
+  <div class="modal-overlay hidden" id="modalNegocioOverlay">
+    <div class="modal-card modal-card--large">
+      <div class="modal-header">
+        <div>
+          <h2>Crear nuevo negocio</h2>
+          <p>Completa los datos del perfil comercial.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearNegocio">&times;</button>
+      </div>
+
+      <form id="formCrearNegocio" class="modal-form">
+        <div class="form-grid form-grid--2">
+          <div class="form-group">
+            <label for="negocioUserID">Usuario emprendedor</label>
+            <select id="negocioUserID" name="userID" class="negocios-input" required>
+              <option value="">Selecciona un usuario</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioCategoryID">Categoría</label>
+            <select id="negocioCategoryID" name="categoryID" class="negocios-input" required>
+              <option value="">Selecciona una categoría</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioBusinessName">Nombre del negocio</label>
+            <input id="negocioBusinessName" name="businessName" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioStatus">Estado</label>
+            <select id="negocioStatus" name="status" class="negocios-input" required>
+              <option value="">Selecciona estado</option>
+              <option value="active">Activo</option>
+              <option value="inactive">Inactivo</option>
+            </select>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="negocioDescription">Descripción</label>
+            <textarea id="negocioDescription" name="description" class="negocios-textarea"></textarea>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="negocioLogoURL">Logo URL</label>
+            <input id="negocioLogoURL" name="logoURL" class="negocios-input" type="url" placeholder="https://...">
+          </div>
+
+          <div class="form-group">
+            <label for="negocioDepartment">Departamento</label>
+            <input id="negocioDepartment" name="department" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioCity">Ciudad</label>
+            <input id="negocioCity" name="city" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioAddressLine">Dirección</label>
+            <input id="negocioAddressLine" name="addressLine" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioReferenceNote">Referencia</label>
+            <input id="negocioReferenceNote" name="referenceNote" class="negocios-input" type="text">
+          </div>
+
+          <div class="form-group">
+            <label for="negocioContactPhone">Teléfono</label>
+            <input id="negocioContactPhone" name="contactPhone" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioContactEmail">Email</label>
+            <input id="negocioContactEmail" name="contactEmail" class="negocios-input" type="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="negocioInstagram">Instagram</label>
+            <input id="negocioInstagram" name="instagram" class="negocios-input" type="text" placeholder="@cuenta">
+          </div>
+
+          <div class="form-group">
+            <label for="negocioFacebook">Facebook</label>
+            <input id="negocioFacebook" name="facebook" class="negocios-input" type="text">
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="negocioTiktok">TikTok</label>
+            <input id="negocioTiktok" name="tiktok" class="negocios-input" type="text" placeholder="@cuenta">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearNegocio">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar negocio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Crear Universidad -->
+  <div class="modal-overlay hidden" id="modalUniversidadOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Agregar universidad</h2>
+          <p>Registra una nueva universidad en el sistema.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearUniversidad">&times;</button>
+      </div>
+
+      <form id="formCrearUniversidad" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="universityName">Nombre de la universidad</label>
+            <input id="universityName" name="universityName" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="universityDepartment">Departamento</label>
+            <input id="universityDepartment" name="department" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="universityCity">Ciudad</label>
+            <input id="universityCity" name="city" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="universityAddressLine">Dirección</label>
+            <input id="universityAddressLine" name="addressLine" class="negocios-input" type="text" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="universityReferenceNote">Referencia</label>
+            <input id="universityReferenceNote" name="referenceNote" class="negocios-input" type="text">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearUniversidad">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar universidad</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/negocios-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/partials/sidebar.css">
+  <link rel="stylesheet" href="/css/partials/topbar.css">
+  <link rel="stylesheet" href="/css/admin/catalogo-admin.css">
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'catalogo' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="catalogo-page">
+        <div class="catalogo-actions">
+          <button class="btn btn-secondary catalogo-action-btn" id="btnOpenCrearCategoria" type="button">
+            <img src="/images/agregar.png" alt="Agregar" class="catalogo-action-btn__icon">
+            <span>Crear Categoría</span>
+          </button>
+          <button class="btn btn-primary catalogo-action-btn" id="btnOpenCrearProducto" type="button">
+            <img src="/images/agregar.png" alt="Agregar" class="catalogo-action-btn__icon">
+            <span>Crear Producto</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="catalogo-panel">
+        <div class="catalogo-filters">
+          <input
+            class="catalogo-input"
+            type="text"
+            id="search"
+            placeholder="Buscar por categoría, producto o negocio"
+          >
+
+          <select class="catalogo-input" id="negocioFiltro">
+            <option value="">Todos los negocios</option>
+          </select>
+
+          <input
+            class="catalogo-input"
+            type="number"
+            id="precio"
+            min="0"
+            step="0.01"
+            placeholder="Precio"
+          >
+
+          <input
+            class="catalogo-input"
+            type="number"
+            id="stock"
+            min="0"
+            placeholder="Stock"
+          >
+
+          <button class="btn btn-primary" id="btnBuscar" type="button">Buscar</button>
+        </div>
+
+        <div class="table-container">
+          <table class="catalogo-table">
+            <thead>
+              <tr>
+                <th>Negocio</th>
+                <th>Categoría</th>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaCatalogo"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal Crear Categoría -->
+  <div class="modal-overlay hidden" id="modalCategoriaOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Crear categoría</h2>
+          <p>Agrega una nueva categoría al sistema.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearCategoria">&times;</button>
+      </div>
+
+      <form id="formCrearCategoria" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="categoryName">Nombre de la categoría</label>
+            <input id="categoryName" name="categoryName" class="catalogo-input" type="text" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="categoryDescription">Descripción</label>
+            <textarea id="categoryDescription" name="description" class="catalogo-textarea"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearCategoria">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar categoría</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Crear Producto -->
+  <div class="modal-overlay hidden" id="modalProductoOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Crear producto</h2>
+          <p>Agrega un nuevo producto al catálogo.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearProducto">&times;</button>
+      </div>
+
+      <form id="formCrearProducto" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="productBusinessID">Negocio</label>
+            <select id="productBusinessID" name="businessID" class="catalogo-input" required>
+              <option value="">Selecciona un negocio</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="productCategoryID">Categoría</label>
+            <select id="productCategoryID" name="categoryID" class="catalogo-input" required>
+              <option value="">Selecciona una categoría</option>
+            </select>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="productName">Nombre del producto</label>
+            <input id="productName" name="productName" class="catalogo-input" type="text" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="productDescription">Descripción</label>
+            <textarea id="productDescription" name="description" class="catalogo-textarea"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="productPrice">Precio</label>
+            <input id="productPrice" name="price" class="catalogo-input" type="number" min="0" step="0.01" required>
+          </div>
+
+          <div class="form-group">
+            <label for="productStock">Stock</label>
+            <input id="productStock" name="stock" class="catalogo-input" type="number" min="0" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="productAvailabilityStatus">Estado</label>
+            <select id="productAvailabilityStatus" name="availabilityStatus" class="catalogo-input" required>
+              <option value="">Selecciona estado</option>
+              <option value="Disponible">Disponible</option>
+              <option value="Agotado">Agotado</option>
+              <option value="Inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearProducto">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/catalogo-admin.js"></script>
+</body>
+</html>

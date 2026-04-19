@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedidos | Dale Click</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/pedidos.css" />
+</head>
+<body>
+  <div class="layout">
+    <%- include('../partials/sidebar', { activePage: 'pedidos' }) %>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="seccion-pedidos">
+        <div class="barra-filtros-pedidos">
+          <div class="campo-busqueda-pedido">
+            <input
+              type="text"
+              id="busquedaPedido"
+              placeholder="Buscar pedido por ID, nombre o apellido..."
+            />
+            <button type="button" class="boton-busqueda-pedido" aria-label="Buscar pedido">
+              <img src="/images/buscar.png" alt="Buscar" />
+            </button>
+          </div>
+
+          <select id="filtroProductoPedido" class="select-filtro-pedido">
+            <option value="">Productos</option>
+            <% (productos || []).forEach((producto) => { %>
+              <option value="<%= producto.productName %>"><%= producto.productName %></option>
+            <% }) %>
+          </select>
+
+          <select id="filtroEstadoPedido" class="select-filtro-pedido">
+            <option value="">Estado</option>
+            <% (estados || []).forEach((estado) => { %>
+              <option value="<%= estado %>"><%= estado %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="contenedor-tabla-pedidos">
+          <table class="tabla-pedidos">
+            <thead>
+              <tr>
+                <th>ID Pedido</th>
+                <th>Fecha</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+
+            <tbody id="tablaPedidosBody">
+              <% if (pedidos && pedidos.length > 0) { %>
+                <% pedidos.forEach((pedido) => { %>
+                  <tr
+                    data-order-id="<%= pedido.orderID %>"
+                    data-product-name="<%= pedido.productName %>"
+                    data-first-name="<%= pedido.firstName %>"
+                    data-last-name="<%= pedido.lastName %>"
+                    data-order-status="<%= pedido.orderStatus %>"
+                  >
+                    <td class="id-pedido"><%= pedido.orderID %></td>
+                    <td class="fecha-pedido">
+                      <%= new Date(pedido.orderDate).toISOString().split('T')[0] %>
+                    </td>
+                    <td class="nombre-producto-pedido"><%= pedido.productName %></td>
+                    <td class="celda-centrada"><%= pedido.quantity %></td>
+                    <td class="precio-pedido">C$ <%= Number(pedido.unitPrice).toFixed(2) %></td>
+                    <td class="nombre-cliente-pedido"><%= pedido.firstName %></td>
+                    <td class="apellido-cliente-pedido"><%= pedido.lastName %></td>
+                    <td class="celda-estado">
+                      <span
+                        class="badge-estado <%= String(pedido.orderStatus).toLowerCase() === 'entregado' ? 'estado-entregado' : 'estado-reservado' %>"
+                      >
+                        <%= pedido.orderStatus %>
+                      </span>
+                    </td>
+                    <td class="celda-accion">
+                      <button
+                        type="button"
+                        class="boton-editar-estado"
+                        data-order-id="<%= pedido.orderID %>"
+                        data-order-status="<%= pedido.orderStatus %>"
+                        title="Editar estado"
+                        aria-label="Editar estado"
+                      >
+                      <img src="/images/editar.png" alt="Editar" class="icono-editar"/>
+                      </button>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="9" class="sin-resultados">
+                    No hay pedidos registrados.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pie-tabla-pedidos">
+          <p>Mostrando <%= pedidos ? pedidos.length : 0 %> entradas</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalEstado" class="modal hidden" aria-hidden="true">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h3>Cambiar estado del pedido</h3>
+        <button type="button" id="cerrarModalEstado" class="boton-cerrar-modal" aria-label="Cerrar modal">
+          ×
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="texto-modal">
+          Selecciona el nuevo estado para este pedido.
+        </p>
+
+        <div class="grupo-modal">
+          <label for="nuevoEstadoPedido">Nuevo estado</label>
+          <select id="nuevoEstadoPedido" class="select-modal-estado">
+            <% (estados || []).forEach((estado) => { %>
+              <option value="<%= estado %>"><%= estado %></option>
+            <% }) %>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-botones">
+        <button type="button" id="cancelarCambioEstado" class="boton-secundario-modal">
+          Cancelar
+        </button>
+        <button type="button" id="confirmarCambioEstado" class="boton-primario-modal">
+          Guardar cambios
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/pedidos.js"></script>
+</body>
+</html>

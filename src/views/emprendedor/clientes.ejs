@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clientes | Dale Click</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/clientes.css" />
+</head>
+<body>
+  <div class="layout">
+    <%- include('../partials/sidebar', { activePage: 'clientes' }) %>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="seccion-clientes">
+        <div class="barra-filtros-clientes">
+          <input
+            type="text"
+            id="busquedaCliente"
+            class="input-filtro-cliente"
+            placeholder="Buscar Cliente..."
+          />
+
+          <select id="filtroSegmento" class="select-filtro-cliente">
+            <option value="">Segmento</option>
+            <% (segmentos || []).forEach((segmento) => { %>
+              <option value="<%= segmento %>"><%= segmento %></option>
+            <% }) %>
+          </select>
+
+          <select id="filtroFecha" class="select-filtro-cliente">
+            <option value="">Rango de Fechas</option>
+            <% (rangosFecha || []).forEach((rango) => { %>
+              <option value="<%= rango.value %>"><%= rango.label %></option>
+            <% }) %>
+          </select>
+
+          <select id="ordenarClientes" class="select-filtro-cliente">
+            <option value="">Ordenar por...</option>
+            <% (ordenes || []).forEach((orden) => { %>
+              <option value="<%= orden.value %>"><%= orden.label %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="contenedor-tabla-clientes">
+          <table class="tabla-clientes">
+            <thead>
+              <tr>
+                <th>ID Cliente</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Información de Contacto</th>
+                <th>Total Pedidos</th>
+                <th>Gasto Total</th>
+                <th>Última Compra</th>
+              </tr>
+            </thead>
+
+            <tbody id="tablaClientesBody">
+              <% if (clientes && clientes.length > 0) { %>
+                <% clientes.forEach((cliente) => { %>
+                  <tr
+                    data-client-id="<%= cliente.userID %>"
+                    data-client-email="<%= cliente.email || '' %>"
+                    data-client-name="<%= cliente.firstName || '' %>"
+                    data-segmento="<%= cliente.segmento %>"
+                    data-fecha="<%= cliente.ultimaCompra || '' %>"
+                    data-pedidos="<%= cliente.totalPedidos %>"
+                    data-gasto="<%= cliente.gastoTotal %>"
+                  >
+                    <td><%= cliente.clientCode %></td>
+                    <td><%= cliente.firstName %></td>
+                    <td><%= cliente.lastName %></td>
+                    <td>
+                      <div class="info-contacto">
+                        <div class="texto-contacto">
+                          <p><%= cliente.email || 'Sin correo' %></p>
+                          <p><%= cliente.phone || 'Sin teléfono' %></p>
+                        </div>
+
+                        <div class="acciones-contacto">
+                          <button
+                            type="button"
+                            class="btn-contacto btn-contacto-general"
+                            aria-label="Contactar cliente"
+                            title="Contactar cliente"
+                          >
+                            ☎
+                          </button>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="celda-pedidos"><%= cliente.totalPedidos %> 🛒</td>
+                    <td class="celda-gasto">C$<%= Number(cliente.gastoTotal).toFixed(2) %></td>
+                    <td class="celda-fecha">
+                      <%= cliente.ultimaCompra ? cliente.ultimaCompra.split('-').reverse().join('/') : 'N/D' %>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="7" class="sin-resultados">
+                    No hay clientes registrados.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pie-clientes">
+          <p class="texto-resumen-clientes">
+            Mostrando <span id="contadorClientesVisibles"><%= clientes ? clientes.length : 0 %></span> clientes
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalContactoClienteOverlay">
+    <div class="modal-contenido modal-contacto">
+      <div class="modal-header">
+        <h2>Contactar Cliente</h2>
+        <button type="button" class="modal-cerrar" data-close-modal="modalContactoClienteOverlay">×</button>
+      </div>
+
+      <form id="formContactoCliente" class="form-modal">
+        <input type="hidden" id="contactClientId" name="clientId" />
+
+        <div class="grupo-campo">
+          <label for="contactClientEmail">Correo del cliente</label>
+          <input type="email" id="contactClientEmail" name="clientEmail" readonly />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="contactSubject">Asunto</label>
+          <input type="text" id="contactSubject" name="subject" required />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="contactMessage">Mensaje</label>
+          <textarea id="contactMessage" name="message" rows="6" required></textarea>
+        </div>
+
+        <div class="modal-acciones">
+          <button type="button" class="boton-secundario" data-close-modal="modalContactoClienteOverlay">Cancelar</button>
+          <button type="submit" class="boton-primario">Enviar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/clientes.js"></script>
+</body>
+</html>

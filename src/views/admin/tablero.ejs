@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/admin/tablero-admin.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="layout">
+    <%- include('../partials/sidebar-admin', { activePage: 'tablero' }) %>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section
+        class="admin-dashboard"
+        id="adminDashboard"
+        data-negocios-labels='<%- negociosLabels %>'
+        data-negocios-values='<%- negociosValues %>'
+        data-productos-labels='<%- productosLabels %>'
+        data-productos-values='<%- productosValues %>'
+      >
+        <div class="dashboard-header">
+          <div>
+            <h1>¡Bienvenida de nuevo, <%= usuario && usuario.firstName ? usuario.firstName : 'Admin' %>!</h1>
+            <p>Resumen general del panel administrativo</p>
+          </div>
+
+          <form method="GET" action="/admin/tablero" class="filtro-periodo-form">
+            <select name="periodo" class="filtro-periodo" onchange="this.form.submit()">
+              <option value="7" <%= periodo === 7 ? 'selected' : '' %>>Últimos 7 días</option>
+              <option value="30" <%= periodo === 30 ? 'selected' : '' %>>Últimos 30 días</option>
+              <option value="60" <%= periodo === 60 ? 'selected' : '' %>>Últimos 60 días</option>
+            </select>
+          </form>
+        </div>
+
+        <div class="cards-grid cards-grid-kpi">
+          <article class="kpi-card kpi-card-salmon">
+            <div class="card-top">
+              <h3>Total clientes</h3>
+              <a href="/admin/tablero/export/clientes?periodo=<%= periodo %>" class="btn-csv">CSV</a>
+            </div>
+            <div class="card-value"><%= kpis.totalClientes %></div>
+          </article>
+
+          <article class="kpi-card kpi-card-salmon">
+            <div class="card-top">
+              <h3>Total emprendedores</h3>
+              <a href="/admin/tablero/export/emprendedores?periodo=<%= periodo %>" class="btn-csv">CSV</a>
+            </div>
+            <div class="card-value"><%= kpis.totalEmprendedores %></div>
+          </article>
+
+          <article class="kpi-card kpi-card-blue">
+            <div class="card-top">
+              <h3>Total categorías</h3>
+              <a href="/admin/tablero/export/categorias?periodo=<%= periodo %>" class="btn-csv">CSV</a>
+            </div>
+            <div class="card-value"><%= kpis.totalCategorias %></div>
+          </article>
+
+          <article class="kpi-card kpi-card-blue">
+            <div class="card-top">
+              <h3>Total productos</h3>
+              <a href="/admin/tablero/export/productos?periodo=<%= periodo %>" class="btn-csv">CSV</a>
+            </div>
+            <div class="card-value"><%= kpis.totalProductos %></div>
+          </article>
+        </div>
+
+        <div class="cards-grid cards-grid-charts">
+          <article class="chart-card">
+            <div class="card-top">
+              <h3>Top de negocios por pedidos</h3>
+              <a href="/admin/tablero/export/top-negocios?periodo=<%= periodo %>" class="btn-csv">CSV</a>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chartTopNegocios"></canvas>
+            </div>
+          </article>
+
+          <article class="chart-card">
+            <div class="card-top">
+              <h3>Productos más vendidos</h3>
+              <a href="/admin/tablero/export/top-productos?periodo=<%= periodo %>" class="btn-csv">CSV</a>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chartTopProductos"></canvas>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/tablero-admin.js"></script>
+</body>
+</html>

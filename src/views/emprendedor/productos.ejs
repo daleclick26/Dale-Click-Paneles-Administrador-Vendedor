@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Productos | Dale Click</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/productos.css" />
+</head>
+<body>
+  <div class="layout">
+    <%- include('../partials/sidebar', { activePage: 'productos' }) %>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section
+        class="seccion-productos"
+        data-estados='<%- JSON.stringify(estados || []) %>'
+        data-business-id="<%= businessID || '' %>"
+      >
+        <div class="barra-filtros">
+          <div class="campo-busqueda">
+            <input
+              type="text"
+              id="busquedaProducto"
+              placeholder="Buscar producto..."
+            />
+            <button type="button" class="boton-busqueda" aria-label="Buscar producto">
+              <img src="/images/buscar.png" alt="Buscar" />
+            </button>
+          </div>
+
+          <select id="filtroCategoria" class="select-filtro">
+            <option value="">Categoría</option>
+            <% (categorias || []).forEach((categoria) => { %>
+              <option value="<%= categoria.categoryName %>">
+                <%= categoria.categoryName %>
+              </option>
+            <% }) %>
+          </select>
+
+          <select id="filtroEstado" class="select-filtro">
+            <option value="">Estado</option>
+            <% (estados || []).forEach((estado) => { %>
+              <option value="<%= estado %>"><%= estado %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="barra-botones">
+          <button
+            type="button"
+            class="boton-accion boton-verde"
+            id="btnAbrirModalCrear"
+          >
+            + Añadir Producto
+          </button>
+        </div>
+
+        <div class="contenedor-tabla">
+          <table class="tabla-productos">
+            <thead>
+              <tr>
+                <th>Imagen</th>
+                <th>Nombre del Producto</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody id="tablaProductosBody">
+              <% if (productos && productos.length > 0) { %>
+                <% productos.forEach((producto) => { %>
+                  <tr
+                    data-product-id="<%= producto.productID %>"
+                    data-business-id="<%= producto.businessID %>"
+                    data-category-id="<%= producto.categoryID %>"
+                    data-category-name="<%= producto.categoryName || '' %>"
+                    data-product-name="<%= producto.productName %>"
+                    data-description="<%= producto.description || '' %>"
+                    data-price="<%= producto.price %>"
+                    data-stock="<%= producto.stock %>"
+                    data-status="<%= producto.availabilityStatus %>"
+                    data-image-url="<%= producto.imageURL || '' %>"
+                  >
+                    <td>
+                      <img
+                        src="<%= producto.imageURL || '/images/imagen.png' %>"
+                        alt="<%= producto.productName %>"
+                        class="miniatura-producto"
+                        onerror="this.src='/images/imagen.png'"
+                      />
+                    </td>
+
+                    <td>
+                      <div class="info-producto">
+                        <a href="#" class="nombre-producto"><%= producto.productName %></a>
+                        <p><%= producto.description || 'Sin descripción' %></p>
+                      </div>
+                    </td>
+
+                    <td>
+                      <span class="categoria-texto"><%= producto.categoryName || 'Sin categoría' %></span>
+                    </td>
+
+                    <td class="precio-producto">C$<%= Number(producto.price).toFixed(2) %></td>
+                    <td><%= producto.stock %></td>
+
+                    <td>
+                      <span class="estado <%= (producto.availabilityStatus || '').toLowerCase().replace(/\s+/g, '-') %>">
+                        <%= producto.availabilityStatus %>
+                      </span>
+                    </td>
+
+                    <td>
+                      <div class="acciones-fila">
+                        <button
+                          type="button"
+                          class="accion editar btn-editar-producto"
+                          title="Editar"
+                        >
+                        <img src="/images/editar.png" alt="Editar" class="icono-editar" />
+                        </button>
+
+                        <button
+                          type="button"
+                          class="accion eliminar btn-eliminar-producto"
+                          title="Eliminar"
+                        >
+                        <img src="/images/borrar.png" alt="Eliminar" class="icono-eliminar" />
+                        </button>
+
+                        <button
+                          type="button"
+                          class="accion imagen btn-imagen-producto"
+                          title="Cambiar imagen"
+                        >
+                        <img src="/images/imagen.png" alt="Cambiar imagen" class="icono-imagen" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="7" class="sin-resultados">
+                    No hay productos registrados.
+                  </td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="pie-tabla">
+          <p>Mostrando <%= productos ? productos.length : 0 %> entradas</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalCrearProductoOverlay">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h2>Añadir Producto</h2>
+        <button type="button" class="modal-cerrar" data-close-modal="modalCrearProductoOverlay">×</button>
+      </div>
+
+      <form id="formCrearProducto" class="form-modal">
+        <input
+          type="hidden"
+          name="businessID"
+          id="crearBusinessID"
+          value="<%= businessID || '' %>"
+        />
+
+        <div class="grupo-campo">
+          <label for="crearCategoryID">Categoría</label>
+          <select name="categoryID" id="crearCategoryID" required>
+            <option value="">Selecciona una categoría</option>
+            <% (categorias || []).forEach((categoria) => { %>
+              <option value="<%= categoria.categoryID %>"><%= categoria.categoryName %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="crearProductName">Nombre del producto</label>
+          <input type="text" name="productName" id="crearProductName" required />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="crearDescription">Descripción</label>
+          <textarea name="description" id="crearDescription" rows="4"></textarea>
+        </div>
+
+        <div class="grupo-campo dos-columnas">
+          <div>
+            <label for="crearPrice">Precio</label>
+            <input type="number" step="0.01" min="0" name="price" id="crearPrice" required />
+          </div>
+
+          <div>
+            <label for="crearStock">Stock</label>
+            <input type="number" min="0" name="stock" id="crearStock" required />
+          </div>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="crearAvailabilityStatus">Estado</label>
+          <select name="availabilityStatus" id="crearAvailabilityStatus" required>
+            <% (estados || []).forEach((estado) => { %>
+              <option value="<%= estado %>"><%= estado %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="modal-acciones">
+          <button type="button" class="boton-secundario" data-close-modal="modalCrearProductoOverlay">Cancelar</button>
+          <button type="submit" class="boton-primario">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalEditarProductoOverlay">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h2>Editar Producto</h2>
+        <button type="button" class="modal-cerrar" data-close-modal="modalEditarProductoOverlay">×</button>
+      </div>
+
+      <form id="formEditarProducto" class="form-modal">
+        <input type="hidden" name="productID" id="editarProductID" />
+
+        <div class="grupo-campo">
+          <label for="editarCategoryID">Categoría</label>
+          <select name="categoryID" id="editarCategoryID" required>
+            <option value="">Selecciona una categoría</option>
+            <% (categorias || []).forEach((categoria) => { %>
+              <option value="<%= categoria.categoryID %>"><%= categoria.categoryName %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="editarProductName">Nombre del producto</label>
+          <input type="text" name="productName" id="editarProductName" required />
+        </div>
+
+        <div class="grupo-campo">
+          <label for="editarDescription">Descripción</label>
+          <textarea name="description" id="editarDescription" rows="4"></textarea>
+        </div>
+
+        <div class="grupo-campo dos-columnas">
+          <div>
+            <label for="editarPrice">Precio</label>
+            <input type="number" step="0.01" min="0" name="price" id="editarPrice" required />
+          </div>
+
+          <div>
+            <label for="editarStock">Stock</label>
+            <input type="number" min="0" name="stock" id="editarStock" required />
+          </div>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="editarAvailabilityStatus">Estado</label>
+          <select name="availabilityStatus" id="editarAvailabilityStatus" required>
+            <% (estados || []).forEach((estado) => { %>
+              <option value="<%= estado %>"><%= estado %></option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="modal-acciones">
+          <button type="button" class="boton-secundario" data-close-modal="modalEditarProductoOverlay">Cancelar</button>
+          <button type="submit" class="boton-primario">Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalEliminarProductoOverlay">
+    <div class="modal-contenido modal-pequeno">
+      <div class="modal-header">
+        <h2>Confirmar eliminación</h2>
+        <button type="button" class="modal-cerrar" data-close-modal="modalEliminarProductoOverlay">×</button>
+      </div>
+
+      <div class="contenido-confirmacion">
+        <p>¿Deseas borrar definitivamente este producto?</p>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="boton-secundario" data-close-modal="modalEliminarProductoOverlay">No</button>
+        <button type="button" class="boton-peligro" id="confirmarEliminarProducto">Sí</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalImagenProductoOverlay">
+    <div class="modal-contenido">
+      <div class="modal-header">
+        <h2>Gestionar Imagen</h2>
+        <button type="button" class="modal-cerrar" data-close-modal="modalImagenProductoOverlay">×</button>
+      </div>
+
+      <form id="formImagenProducto" class="form-modal">
+        <input type="hidden" id="imagenID" name="imageID" />
+
+        <div class="grupo-campo">
+          <label for="imagenProductID">Producto</label>
+          <select name="productID" id="imagenProductID" required>
+            <option value="">Selecciona un producto</option>
+            <% (productos || []).forEach((producto) => { %>
+              <option value="<%= producto.productID %>">
+                <%= producto.productName %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="grupo-campo">
+          <label for="imagenURL">ImageURL</label>
+          <input type="text" name="imageURL" id="imagenURL" required />
+        </div>
+
+        <div class="modal-acciones modal-acciones-imagen">
+          <button type="button" class="boton-primario" id="btnAgregarImagen">Añadir</button>
+          <button type="button" class="boton-secundario" id="btnActualizarImagen">Actualizar</button>
+          <button type="button" class="boton-peligro" id="btnBorrarImagen">Borrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/productos.js"></script>
+</body>
+</html>

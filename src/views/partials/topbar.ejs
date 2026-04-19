@@ -1,0 +1,38 @@
+<header class="barra-superior">
+  <div class="barra-izquierda">
+    <button class="boton-menu" type="button" aria-label="Abrir menú">&#9776;</button>
+  </div>
+
+  <div class="barra-derecha">
+    <div class="busqueda-container">
+      <button class="icono-superior" id="toggleBusqueda">
+        <img src="/images/buscar.png" alt="Buscar">
+      </button>
+
+      <input
+        type="text"
+        id="inputBusquedaGlobal"
+        placeholder="Buscar..."
+        class="input-busqueda hidden"
+      >
+    </div>
+
+    <div class="notificaciones-container">
+      <button class="icono-superior" id="btnNotificaciones">
+        <img src="/images/notificaciones.png" alt="Notificaciones">
+      </button>
+
+      <div class="dropdown-notificaciones hidden" id="dropdownNotificaciones">
+        <p class="titulo">Notificaciones</p>
+        <ul id="listaNotificaciones"></ul>
+      </div>
+    </div>
+
+    <img
+      src="<%= (usuario && usuario.profileImageURL && String(usuario.profileImageURL).trim() !== '') ? usuario.profileImageURL : '/images/perfil-usuario.png' %>"
+      alt="Perfil de usuario"
+      class="avatar-usuario"
+      onerror="this.src='/images/perfil-usuario.png'"
+    />
+  </div>
+</header>

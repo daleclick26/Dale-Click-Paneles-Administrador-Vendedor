@@ -1,0 +1,93 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #f4efe7;
+  color: #1f1f1f;
+  overflow: hidden; /* evita scroll en toda la página */
+  overflow-x: hidden; /*evita scroll horizontal */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font: inherit;
+}
+
+:root {
+  --sidebar-width: 220px;
+  --topbar-height: 50px;
+  --contenido-bg: #f4efe7;
+}
+
+.layout {
+  min-height: 100vh;
+}
+
+.contenido {
+  margin-left: var(--sidebar-width);
+  height: 100vh;
+  overflow-y: auto;
+  padding: calc(var(--topbar-height) + 15px) 15px 15px;
+  background-color: var(--contenido-bg);
+}
+
+/* Topbar fija dentro del área de contenido */
+.contenido .topbar,
+.contenido .barra-superior,
+.contenido .topbar-emprendedor {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  height: var(--topbar-height);
+  z-index: 900;
+  background: white;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(23, 58, 106, 0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+}
+
+/* Para que las secciones no queden pegadas arriba */
+.seccion-perfil-comercial,
+.contenido > section,
+.contenido > div {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --sidebar-width: 86px;
+    --topbar-height: 78px;
+  }
+
+  .contenido {
+    padding: calc(var(--topbar-height) + 20px) 20px 20px;
+  }
+
+  .contenido .topbar,
+  .contenido .barra-superior,
+  .contenido .topbar-emprendedor {
+    padding: 0 20px;
+  }
+}
+
+body.sidebar-collapsed {
+  --sidebar-width: 86px;
+}

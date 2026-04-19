@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/partials/sidebar.css">
+  <link rel="stylesheet" href="/css/partials/topbar.css">
+  <link rel="stylesheet" href="/css/admin/membresias-admin.css">
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'membresias' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="membresias-page">
+        <div class="membresias-actions">
+          <button class="btn btn-primary membresias-action-btn" id="btnOpenCrearPlan" type="button">
+            <img src="/images/agregar.png" alt="Agregar" class="membresias-action-btn__icon">
+            <span>Crear Plan</span>
+          </button>
+          <button class="btn btn-secondary membresias-action-btn" id="btnOpenCrearDescuento" type="button">
+            <img src="/images/agregar.png" alt="Agregar" class="membresias-action-btn__icon">
+            <span>Crear Descuento</span>
+          </button>
+          <button class="btn btn-primary membresias-action-btn" id="btnOpenCrearSuscripcion" type="button">
+            <img src="/images/agregar.png" alt="Agregar" class="membresias-action-btn__icon">
+            <span>Agregar Suscripción</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="membresias-panel">
+        <div class="membresias-filters">
+          <input
+            class="membresias-input"
+            type="text"
+            id="search"
+            placeholder="Buscar por negocio, nombre, apellido o plan"
+          >
+          <button class="btn btn-primary" id="btnBuscar" type="button">Buscar</button>
+        </div>
+
+        <div class="table-container">
+          <table class="membresias-table">
+            <thead>
+              <tr>
+                <th>Negocio</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>SuscripciónID</th>
+                <th>Plan</th>
+                <th>Precio</th>
+                <th>Inicio</th>
+                <th>Finalización</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tablaMembresias"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal crear plan -->
+  <div class="modal-overlay hidden" id="modalPlanOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Crear plan</h2>
+          <p>Agrega un nuevo plan de membresía.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearPlan">&times;</button>
+      </div>
+
+      <form id="formCrearPlan" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="planName">Nombre del plan</label>
+            <input id="planName" name="planName" class="membresias-input" type="text" required>
+          </div>
+
+          <div class="form-group">
+            <label for="planPrice">Precio</label>
+            <input id="planPrice" name="price" class="membresias-input" type="number" step="0.01" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label for="durationDays">Duración en días</label>
+            <input id="durationDays" name="durationDays" class="membresias-input" type="number" min="1" required>
+          </div>
+
+          <div class="form-group">
+            <label for="featuredAds">Anuncios destacados</label>
+            <input id="featuredAds" name="featuredAds" class="membresias-input" type="number" min="0" required>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearPlan">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar plan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal crear descuento -->
+  <div class="modal-overlay hidden" id="modalDescuentoOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Crear descuento</h2>
+          <p>Este descuento se guarda para productos.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearDescuento">&times;</button>
+      </div>
+
+      <form id="formCrearDescuento" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="discountProductID">Producto</label>
+            <select id="discountProductID" name="productID" class="membresias-input" required>
+              <option value="">Selecciona un producto</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="discountType">Tipo de descuento</label>
+            <select id="discountType" name="discountType" class="membresias-input" required>
+              <option value="">Selecciona tipo</option>
+              <option value="percentage">Porcentaje</option>
+              <option value="fixed">Monto fijo</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="discountValue">Valor</label>
+            <input id="discountValue" name="discountValue" class="membresias-input" type="number" step="0.01" min="0" required>
+          </div>
+
+          <div class="form-group">
+            <label for="discountStartDate">Inicio</label>
+            <input id="discountStartDate" name="startDate" class="membresias-input" type="datetime-local" required>
+          </div>
+
+          <div class="form-group">
+            <label for="discountEndDate">Finalización</label>
+            <input id="discountEndDate" name="endDate" class="membresias-input" type="datetime-local" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="discountIsActive">Estado</label>
+            <select id="discountIsActive" name="isActive" class="membresias-input" required>
+              <option value="true">Activo</option>
+              <option value="false">Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearDescuento">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar descuento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal crear suscripción -->
+  <div class="modal-overlay hidden" id="modalSuscripcionOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Agregar suscripción</h2>
+          <p>Asigna un plan a un negocio.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearSuscripcion">&times;</button>
+      </div>
+
+      <form id="formCrearSuscripcion" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="subscriptionBusinessID">Negocio</label>
+            <select id="subscriptionBusinessID" name="businessID" class="membresias-input" required>
+              <option value="">Selecciona un negocio</option>
+            </select>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="subscriptionPlanID">Plan</label>
+            <select id="subscriptionPlanID" name="planID" class="membresias-input" required>
+              <option value="">Selecciona un plan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="subscriptionStartDate">Fecha de inicio</label>
+            <input id="subscriptionStartDate" name="startDate" class="membresias-input" type="date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="subscriptionEndDate">Fecha de finalización</label>
+            <input id="subscriptionEndDate" name="endDate" class="membresias-input" type="date" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="subscriptionStatus">Estado</label>
+            <select id="subscriptionStatus" name="status" class="membresias-input" required>
+              <option value="">Selecciona estado</option>
+              <option value="active">Activo</option>
+              <option value="inactive">Inactivo</option>
+              <option value="expired">Vencido</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearSuscripcion">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar suscripción</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal editar suscripción -->
+  <div class="modal-overlay hidden" id="modalEditarSuscripcionOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Editar suscripción</h2>
+          <p>Modifica los datos de la suscripción seleccionada.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseEditarSuscripcion">&times;</button>
+      </div>
+
+      <form id="formEditarSuscripcion" class="modal-form">
+        <input type="hidden" id="editSubscriptionID" name="subscriptionID">
+
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="editBusinessID">Negocio</label>
+            <select id="editBusinessID" name="businessID" class="membresias-input" required>
+              <option value="">Selecciona un negocio</option>
+            </select>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="editPlanID">Plan</label>
+            <select id="editPlanID" name="planID" class="membresias-input" required>
+              <option value="">Selecciona un plan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editStartDate">Fecha de inicio</label>
+            <input id="editStartDate" name="startDate" class="membresias-input" type="date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editEndDate">Fecha de finalización</label>
+            <input id="editEndDate" name="endDate" class="membresias-input" type="date" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="editStatus">Estado</label>
+            <select id="editStatus" name="status" class="membresias-input" required>
+              <option value="">Selecciona estado</option>
+              <option value="active">Activo</option>
+              <option value="inactive">Inactivo</option>
+              <option value="expired">Vencido</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelEditarSuscripcion">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Actualizar suscripción</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/membresias-admin.js"></script>
+</body>
+</html>

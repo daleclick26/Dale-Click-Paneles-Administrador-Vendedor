@@ -1,0 +1,150 @@
+.barra-superior {
+  position: fixed;
+  top: 0;
+  left: var(--sidebar-width);
+  right: 0;
+  height: var(--topbar-height);
+  z-index: 900;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+
+  background-color: white;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.barra-izquierda,
+.barra-derecha {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* botones */
+.boton-menu,
+.icono-superior {
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.boton-menu {
+  font-size: 1.5rem;
+  color: #1f1f1f;
+}
+
+.icono-superior img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+/* hover */
+.boton-menu:hover,
+.icono-superior:hover {
+  background: rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* avatar */
+.avatar-usuario {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+
+  border: 2px solid rgba(0, 0, 0, 0.06);
+
+  transition: 0.2s ease;
+}
+
+.avatar-usuario:hover {
+  transform: scale(1.05);
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .barra-superior {
+    left: var(--sidebar-width);
+    padding: 0 18px;
+  }
+
+  .barra-derecha {
+    gap: 12px;
+  }
+
+  .boton-menu,
+  .icono-superior {
+    width: 34px;
+    height: 34px;
+  }
+
+  .avatar-usuario {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.busqueda-container {
+  position: relative;
+}
+
+.input-busqueda {
+  position: absolute;
+  right: 0;
+  top: 45px;
+  width: 220px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.1);
+  outline: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.notificaciones-container {
+  position: relative;
+}
+
+.dropdown-notificaciones {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  padding: 12px;
+}
+
+.dropdown-notificaciones ul {
+  list-style: none;
+  margin-top: 10px;
+}
+
+.dropdown-notificaciones li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+
+/*Supuestamente para dejarlo más sólido*/
+.barra-superior {
+  width: auto;
+}
+
+body.sidebar-collapsed .barra-superior {
+  left: 86px;
+}

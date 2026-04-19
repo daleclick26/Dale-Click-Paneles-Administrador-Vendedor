@@ -1,0 +1,46 @@
+<aside class="sidebar">
+  <div class="sidebar-top">
+    <div class="logo-container">
+      <img src="/images/logo_daleclick.png" alt="Logo Dale Click" class="logo" />
+    </div>
+
+    <nav class="menu-lateral">
+      <a href="/" class="menu-item">
+        <img class="icono-menu" src="/images/tablero.png" alt="Tablero" />
+        <span>Tablero</span>
+      </a>
+
+      <a href="/productos" class="menu-item <%= activePage === 'productos' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/productos.png" alt="Productos" />
+        <span>Productos</span>
+      </a>
+
+      <a href="/pedidos" class="menu-item <%= activePage === 'pedidos' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/pedidos.png" alt="Pedidos" />
+        <span>Pedidos</span>
+      </a>
+
+      <a href="/perfil-comercial" class="menu-item <%= activePage === 'perfil' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/perfil-comercial.png" alt="Perfil comercial" />
+        <span>Perfil Comercial</span>
+      </a>
+
+      <a href="/clientes" class="menu-item <%= activePage === 'clientes' ? 'activo' : '' %>">
+        <img class="icono-menu" src="/images/clientes.png" alt="Clientes" />
+        <span>Clientes</span>
+      </a>
+    </nav>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="/configuracion" class="menu-item <%= activePage === 'configuracion' ? 'activo' : '' %>">
+      <img class="icono-menu" src="/images/configuracion.png" alt="Configuración" />
+      <span>Configuración</span>
+    </a>
+
+  <a href="/logout" class="menu-item cerrar-sesion" onclick="return confirm('¿Seguro que deseas cerrar sesión?')">
+    <img class="icono-menu" src="/images/cerrar-sesion.png" alt="Cerrar sesión" />
+    <span>Cerrar sesión</span>
+  </a>
+  </div>
+</aside>

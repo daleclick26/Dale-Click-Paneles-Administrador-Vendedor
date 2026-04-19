@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/partials/sidebar.css">
+  <link rel="stylesheet" href="/css/partials/topbar.css">
+  <link rel="stylesheet" href="/css/admin/evaluacion-admin.css">
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'evaluacion' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="evaluacion-page">
+        <section class="evaluacion-panel">
+          <div class="filters-card">
+            <div class="filters">
+              <label class="filter-field filter-field--search" for="search">
+                <span>Buscar</span>
+                <input
+                  type="text"
+                  id="search"
+                  class="evaluacion-input"
+                  placeholder="Nombre, apellido o negocio"
+                >
+              </label>
+
+              <label class="filter-field" for="rating">
+                <span>Calificación</span>
+                <select id="rating" class="evaluacion-input">
+                  <option value="">Todas</option>
+                  <option value="5">5 estrellas</option>
+                  <option value="4">4 estrellas</option>
+                  <option value="3">3 estrellas</option>
+                  <option value="2">2 estrellas</option>
+                  <option value="1">1 estrella</option>
+                </select>
+              </label>
+
+              <button class="filters__button" id="btnBuscar" type="button">Aplicar filtros</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="evaluacion-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>OrdenID</th>
+                  <th>Producto</th>
+                  <th>Negocio</th>
+                  <th>Evaluación</th>
+                  <th>Comentario</th>
+                </tr>
+              </thead>
+              <tbody id="tablaEvaluaciones">
+                <tr>
+                  <td colspan="7" class="empty-state">Cargando evaluaciones...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/evaluacion-admin.js"></script>
+</body>
+</html>

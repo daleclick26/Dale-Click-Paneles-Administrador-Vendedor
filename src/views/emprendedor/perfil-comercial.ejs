@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil Comercial | Dale Click</title>
+  <link rel="stylesheet" href="/css/global.css" />
+  <link rel="stylesheet" href="/css/partials/sidebar.css" />
+  <link rel="stylesheet" href="/css/partials/topbar.css" />
+  <link rel="stylesheet" href="/css/perfil-comercial.css" />
+</head>
+<body>
+  <div class="layout">
+    <%- include('../partials/sidebar', { activePage: 'perfil' }) %>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="seccion-perfil-comercial">
+        <div class="encabezado-perfil-comercial">
+          <div>
+            <h1 class="titulo-seccion">Perfil Comercial</h1>
+            <p class="subtitulo-seccion">
+              Administra la información pública de tu negocio, redes sociales, horarios y suscripción.
+            </p>
+          </div>
+
+          <div class="hero-logo-card">
+            <div class="hero-logo-ring">
+              <% if (businessProfile?.logoURL) { %>
+                <img
+                  id="logoPreviewHero"
+                  src="<%= businessProfile.logoURL %>"
+                  alt="Logo del negocio"
+                  onerror="this.src='/images/logo_daleclick.png'"
+                />
+              <% } else { %>
+                <img
+                  id="logoPreviewHero"
+                  src="/images/logo_daleclick.png"
+                  alt="Logo del negocio"
+                />
+              <% } %>
+            </div>
+            <div class="hero-logo-info">
+              <h2><%= businessProfile?.businessName || 'Tu negocio' %></h2>
+              <p><%= businessProfile?.city || 'Ciudad no registrada' %>, <%= businessProfile?.department || 'Departamento no registrado' %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tarjeta-negocio tarjeta-principal">
+          <div class="tarjeta-header">
+            <div>
+              <p class="tarjeta-tag">Información general</p>
+              <h2>Datos del negocio</h2>
+            </div>
+            <span class="estado-edicion" id="estadoEdicion">Modo vista</span>
+          </div>
+
+          <form id="formPerfilComercial" class="form-perfil-comercial">
+            <div class="grid-campos">
+              <div class="campo-card campo-card-full">
+                <div class="campo-card-header">
+                  <label for="businessName">Nombre del Negocio</label>
+                  <button type="button" class="boton-editar-campo" data-target="businessName" aria-label="Editar nombre del negocio">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="businessName"
+                  name="businessName"
+                  value="<%= businessProfile?.businessName || '' %>"
+                  placeholder="Nombre de tu negocio"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card campo-card-full">
+                <div class="campo-card-header">
+                  <label for="description">Descripción</label>
+                  <button type="button" class="boton-editar-campo" data-target="description" aria-label="Editar descripción">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="description"
+                  name="description"
+                  value="<%= businessProfile?.description || '' %>"
+                  placeholder="Describe brevemente tu negocio"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card campo-card-full">
+                <div class="campo-card-header">
+                  <label for="addressLine">Dirección</label>
+                  <button type="button" class="boton-editar-campo" data-target="addressLine" aria-label="Editar dirección">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="addressLine"
+                  name="addressLine"
+                  value="<%= businessProfile?.addressLine || '' %>"
+                  placeholder="Dirección del negocio"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="department">Departamento</label>
+                  <button type="button" class="boton-editar-campo" data-target="department" aria-label="Editar departamento">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="department"
+                  name="department"
+                  value="<%= businessProfile?.department || '' %>"
+                  placeholder="Departamento"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="city">Ciudad</label>
+                  <button type="button" class="boton-editar-campo" data-target="city" aria-label="Editar ciudad">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value="<%= businessProfile?.city || '' %>"
+                  placeholder="Ciudad"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="contactPhone">Teléfono de Contacto</label>
+                  <button type="button" class="boton-editar-campo" data-target="contactPhone" aria-label="Editar teléfono">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="contactPhone"
+                  name="contactPhone"
+                  value="<%= businessProfile?.contactPhone || '' %>"
+                  placeholder="Número de teléfono"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="contactEmail">Email de Contacto</label>
+                  <button type="button" class="boton-editar-campo" data-target="contactEmail" aria-label="Editar correo">✎</button>
+                </div>
+                <input
+                  type="email"
+                  id="contactEmail"
+                  name="contactEmail"
+                  value="<%= businessProfile?.contactEmail || '' %>"
+                  placeholder="correo@negocio.com"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="instagram">Instagram</label>
+                  <button type="button" class="boton-editar-campo" data-target="instagram" aria-label="Editar Instagram">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="instagram"
+                  name="instagram"
+                  value="<%= businessProfile?.instagram || '' %>"
+                  placeholder="@tunegocio"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="facebook">Facebook</label>
+                  <button type="button" class="boton-editar-campo" data-target="facebook" aria-label="Editar Facebook">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="facebook"
+                  name="facebook"
+                  value="<%= businessProfile?.facebook || '' %>"
+                  placeholder="Nombre o enlace"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="tiktok">TikTok</label>
+                  <button type="button" class="boton-editar-campo" data-target="tiktok" aria-label="Editar TikTok">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="tiktok"
+                  name="tiktok"
+                  value="<%= businessProfile?.tiktok || '' %>"
+                  placeholder="@tunegocio"
+                  disabled
+                />
+              </div>
+
+              <div class="campo-card">
+                <div class="campo-card-header">
+                  <label for="logoURL">Logo URL</label>
+                  <button type="button" class="boton-editar-campo" data-target="logoURL" aria-label="Editar URL del logo">✎</button>
+                </div>
+                <input
+                  type="text"
+                  id="logoURL"
+                  name="logoURL"
+                  value="<%= businessProfile?.logoURL || '' %>"
+                  placeholder="https://..."
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div class="acciones-formulario">
+              <button type="submit" id="guardarCambios" class="boton-guardar" disabled>Guardar cambios</button>
+              <button type="button" id="cancelarCambios" class="boton-cancelar">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="secciones-inferiores">
+          <section class="bloque-inferior bloque-horarios premium-card">
+            <div class="cabecera-bloque">
+              <div>
+                <p class="tarjeta-tag">Disponibilidad</p>
+                <h2>Horarios</h2>
+              </div>
+              <button type="button" class="boton-secundario" id="btnAbrirModalHorarios">Editar horario</button>
+            </div>
+
+            <div class="lista-horarios">
+              <% if (businessHours && businessHours.length > 0) { %>
+                <% businessHours.forEach((hour) => { %>
+                  <div class="item-horario">
+                    <span class="dia-horario-card"><%= hour.dayOfWeek %></span>
+                    <span class="hora-horario-card">
+                      <% if (hour.isClosed) { %>
+                        Cerrado
+                      <% } else { %>
+                        <%= String(hour.openTime || '').slice(0, 5) %> - <%= String(hour.closeTime || '').slice(0, 5) %>
+                      <% } %>
+                    </span>
+                  </div>
+                <% }) %>
+              <% } else { %>
+                <p class="sin-resultados">No hay horarios registrados.</p>
+              <% } %>
+            </div>
+          </section>
+
+          <section class="bloque-inferior bloque-suscripciones premium-card">
+            <div class="cabecera-bloque">
+              <div>
+                <p class="tarjeta-tag">Membresía</p>
+                <h2>Suscripción</h2>
+              </div>
+            </div>
+
+            <div class="contenido-suscripcion">
+              <div class="suscripcion-item">
+                <span>Plan Actual</span>
+                <strong><%= subscription?.planName || 'Sin plan activo' %></strong>
+              </div>
+
+              <div class="suscripcion-item">
+                <span>Fecha de Inicio</span>
+                <strong><%= subscription?.startDate ? new Date(subscription.startDate).toISOString().split('T')[0] : 'N/D' %></strong>
+              </div>
+
+              <div class="suscripcion-item">
+                <span>Fecha de Fin</span>
+                <strong><%= subscription?.endDate ? new Date(subscription.endDate).toISOString().split('T')[0] : 'N/D' %></strong>
+              </div>
+
+              <div class="suscripcion-item">
+                <span>Anuncios Destacados</span>
+                <strong><%= subscription?.featuredAds ?? 0 %></strong>
+              </div>
+
+              <div class="barra-progreso">
+                <div class="progreso-actual"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay hidden" id="modalHorariosOverlay">
+    <div class="modal-contenido modal-horarios">
+      <div class="modal-header">
+        <h2>Editar Horarios</h2>
+        <button type="button" class="modal-cerrar" data-close-modal="modalHorariosOverlay">×</button>
+      </div>
+
+      <form id="formHorarios" class="form-modal">
+        <% if (businessHours && businessHours.length > 0) { %>
+          <% businessHours.forEach((hour) => { %>
+            <div class="fila-horario" data-day="<%= hour.dayOfWeek %>">
+              <div class="dia-horario"><%= hour.dayOfWeek %></div>
+
+              <label class="check-cerrado">
+                <input
+                  type="checkbox"
+                  class="input-cerrado"
+                  <%= hour.isClosed ? 'checked' : '' %>
+                />
+                Cerrado
+              </label>
+
+              <input
+                type="time"
+                class="input-hora-apertura"
+                value="<%= hour.isClosed ? '' : String(hour.openTime || '').slice(0, 5) %>"
+                <%= hour.isClosed ? 'disabled' : '' %>
+              />
+
+              <input
+                type="time"
+                class="input-hora-cierre"
+                value="<%= hour.isClosed ? '' : String(hour.closeTime || '').slice(0, 5) %>"
+                <%= hour.isClosed ? 'disabled' : '' %>
+              />
+            </div>
+          <% }) %>
+        <% } %>
+
+        <div class="modal-acciones">
+          <button type="button" class="boton-secundario" data-close-modal="modalHorariosOverlay">Cancelar</button>
+          <button type="submit" class="boton-primario">Guardar horarios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/perfil-comercial.js"></script>
+</body>
+</html>

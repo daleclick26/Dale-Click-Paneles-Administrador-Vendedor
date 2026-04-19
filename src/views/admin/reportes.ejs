@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/partials/sidebar.css">
+  <link rel="stylesheet" href="/css/partials/topbar.css">
+  <link rel="stylesheet" href="/css/admin/reportes-admin.css">
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'reportes' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="reportes-page">
+          <div class="reportes-actions">
+            <a class="btn btn-secondary" href="/admin/reportes/export/7">Descargar CSV 7 días</a>
+            <a class="btn btn-secondary" href="/admin/reportes/export/30">Descargar CSV 30 días</a>
+            <a class="btn btn-primary" href="/admin/reportes/export/60">Descargar CSV 60 días</a>
+          </div>
+        </section>
+
+        <section class="reportes-panel">
+          <div class="reportes-filters">
+            <input
+              class="reportes-input"
+              type="text"
+              id="search"
+              placeholder="Buscar por negocio, nombre o apellido"
+            >
+
+            <input
+              class="reportes-input"
+              type="text"
+              id="departamento"
+              placeholder="Departamento"
+            >
+
+            <input
+              class="reportes-input"
+              type="text"
+              id="ciudad"
+              placeholder="Ciudad"
+            >
+
+            <button class="btn btn-primary" id="btnBuscar" type="button">Buscar</button>
+          </div>
+        </section>
+
+        <section class="reportes-panel">
+          <div class="reportes-section-header">
+            <h2>Tabla Órdenes</h2>
+          </div>
+
+          <div class="table-container">
+            <table class="reportes-table">
+              <thead>
+                <tr>
+                  <th>Orden</th>
+                  <th>Negocio</th>
+                  <th>Cliente</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th>Producto</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody id="tablaOrdenes"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="reportes-panel">
+          <div class="reportes-section-header">
+            <h2>Tabla Detalles de Órden</h2>
+          </div>
+
+          <div class="table-container">
+            <table class="reportes-table">
+              <thead>
+                <tr>
+                  <th>OrderDetailID</th>
+                  <th>OrderID</th>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Precio unitario</th>
+                </tr>
+              </thead>
+              <tbody id="tablaDetallesOrden"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/reportes-admin.js"></script>
+</body>
+</html>

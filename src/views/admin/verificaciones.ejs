@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/partials/sidebar.css">
+  <link rel="stylesheet" href="/css/partials/topbar.css">
+  <link rel="stylesheet" href="/css/admin/verificaciones-admin.css">
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'verificaciones' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="verificaciones-page">
+          <div class="verificaciones-actions">
+            <button class="btn btn-primary" id="btnOpenCrearVerificacion" type="button">
+              <img src="/images/agregar.png" alt="Agregar"> Agregar Verificación
+            </button>
+          </div>
+        </section>
+
+        <section class="verificaciones-panel">
+          <div class="verificaciones-filters">
+            <input
+              class="verificaciones-input"
+              type="text"
+              id="search"
+              placeholder="Buscar por nombre, apellido o identificación"
+            >
+
+            <select class="verificaciones-input" id="tipoUsuario">
+              <option value="">Todos los usuarios</option>
+              <option value="Cliente">Cliente</option>
+              <option value="Emprendedor">Emprendedor</option>
+              <option value="Administrador">Administrador</option>
+            </select>
+
+            <button class="btn btn-primary" id="btnBuscar" type="button">Buscar</button>
+          </div>
+
+          <div class="table-container">
+            <table class="verificaciones-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Tipo de Documento</th>
+                  <th>Identificación</th>
+                  <th>Tipo de Usuario</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tablaVerificaciones"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal Crear Verificación -->
+  <div class="modal-overlay hidden" id="modalVerificacionOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Agregar verificación</h2>
+          <p>Registra una nueva verificación de identidad.</p>
+        </div>
+        <button type="button" class="modal-close" id="btnCloseCrearVerificacion">&times;</button>
+      </div>
+
+      <form id="formCrearVerificacion" class="modal-form">
+        <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="verificationUserID">Usuario</label>
+            <select id="verificationUserID" name="userID" class="verificaciones-input" required>
+              <option value="">Selecciona un usuario</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="documentType">Tipo de Documento</label>
+            <select id="documentType" name="documentType" class="verificaciones-input" required>
+              <option value="">Selecciona tipo</option>
+              <option value="Cédula">Cédula</option>
+              <option value="Pasaporte">Pasaporte</option>
+              <option value="Carné estudiantil">Carné estudiantil</option>
+              <option value="Licencia">Licencia</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="documentNumber">Identificación</label>
+            <input id="documentNumber" name="documentNumber" class="verificaciones-input" type="text" required>
+          </div>
+
+          <div class="form-group form-group--full">
+            <label for="verificationStatus">Estado</label>
+            <select id="verificationStatus" name="verificationStatus" class="verificaciones-input" required>
+              <option value="">Selecciona estado</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Verificado">Verificado</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btnCancelCrearVerificacion">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar verificación</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/verificaciones-admin.js"></script>
+</body>
+</html>

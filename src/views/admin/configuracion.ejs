@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/partials/sidebar.css">
+  <link rel="stylesheet" href="/css/partials/topbar.css">
+  <link rel="stylesheet" href="/css/admin/configuracion-admin.css">
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <%- include('../partials/sidebar-admin', { activePage: 'configuracion' }) %>
+    </aside>
+
+    <main class="contenido">
+      <%- include('../partials/topbar', { usuario }) %>
+
+      <section class="config-page">
+        <section class="config-grid">
+          <article class="config-card config-card--wide">
+            <div class="config-card__header">
+              <div>
+                <span class="config-card__eyebrow">Perfil</span>
+                <h2>Información del Administrador</h2>
+              </div>
+              <div class="status">
+                Estado:
+                <span class="badge"><%= usuario.status || 'Activo' %></span>
+              </div>
+            </div>
+
+            <form id="configForm" class="config-form">
+              <div class="grid">
+                <label class="field">
+                  <span>Username</span>
+                  <input name="username" value="<%= usuario.username || '' %>" placeholder="Username" />
+                </label>
+
+                <label class="field">
+                  <span>Nombre</span>
+                  <input name="firstName" value="<%= usuario.firstName || '' %>" placeholder="Nombre" />
+                </label>
+
+                <label class="field">
+                  <span>Apellido</span>
+                  <input name="lastName" value="<%= usuario.lastName || '' %>" placeholder="Apellido" />
+                </label>
+
+                <label class="field">
+                  <span>Email</span>
+                  <input name="email" type="email" value="<%= usuario.email || '' %>" placeholder="Email" />
+                </label>
+
+                <label class="field">
+                  <span>Teléfono</span>
+                  <input name="phone" value="<%= usuario.phone || '' %>" placeholder="Telefono" />
+                </label>
+
+                <label class="field">
+                  <span>Cédula</span>
+                  <input name="nationalID" value="<%= usuario.nationalID || '' %>" placeholder="Cedula" />
+                </label>
+
+                <label class="field field--full">
+                  <span>Contraseña</span>
+                  <input name="password" type="text" value="<%= usuario.password || '' %>" placeholder="Password" />
+                </label>
+              </div>
+
+              <div class="config-actions">
+                <button type="submit" class="btn-save">Guardar cambios</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="config-card foto-card">
+            <div class="config-card__header">
+              <div>
+                <span class="config-card__eyebrow">Avatar</span>
+                <h2>Foto de perfil</h2>
+              </div>
+            </div>
+
+            <div class="avatar">
+              <img
+                src="<%= usuario.profileImageURL || '/images/perfil-usuario.png' %>"
+                alt="Foto de perfil"
+                onerror="this.src='/images/perfil-usuario.png'"
+              />
+            </div>
+
+            <label class="field">
+              <span>URL de la imagen</span>
+              <input
+                type="text"
+                id="fotoURL"
+                value="<%= usuario.profileImageURL || '' %>"
+                placeholder="https://ejemplo.com/foto.jpg"
+              />
+            </label>
+
+            <button id="btnFoto" type="button" class="btn-photo">Actualizar foto</button>
+          </article>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script src="/js/sidebar.js"></script>
+  <script src="/js/topbar.js"></script>
+  <script src="/js/admin/configuracion-admin.js"></script>
+</body>
+</html>
