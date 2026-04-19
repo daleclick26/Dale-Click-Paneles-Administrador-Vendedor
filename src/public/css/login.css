@@ -477,6 +477,40 @@ button:active {
   }
 }
 
+/* Mobile responsiveness for screens below 768px */
+@media (max-width: 767px) {
+  .login-container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .form {
+    width: 90%;
+    gap: 16px;
+  }
+
+  input {
+    padding: 16px;
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  button {
+    width: 100%;
+    padding: 16px;
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .form-title {
+    font-size: 16px;
+  }
+
+  .form-subtitle {
+    font-size: 16px;
+  }
+}
+
 /*Formas decorativas ----- EXTRA ----- */ 
 .logo,
 .paneles,
