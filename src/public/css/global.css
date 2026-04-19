@@ -74,15 +74,18 @@ button {
 @media (max-width: 900px) {
   :root {
     --topbar-height: 78px;
+    --sidebar-width: 0px;
   }
 
   .contenido {
-    padding: calc(var(--topbar-height) + 20px) 20px 20px;
+    margin-left: 0;
+    padding: calc(var(--topbar-height) + 16px) 14px 16px;
   }
 
   .contenido .topbar,
   .contenido .barra-superior,
   .contenido .topbar-emprendedor {
+    left: 0;
     padding: 0 20px;
   }
 }

@@ -1,3 +1,7 @@
+.seccion-productos {
+  min-width: 0;
+}
+
 .barra-filtros {
   display: grid;
   grid-template-columns: minmax(320px, 2fr) 180px 180px;
@@ -113,11 +117,13 @@
   border: 1px solid #ddd5c7;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: 18px;
 }
 
 .tabla-productos {
   width: 100%;
+  min-width: 760px;
   border-collapse: collapse;
   overflow-x: hidden;
 }
@@ -206,6 +212,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
 }
 
 .accion {
@@ -307,15 +314,18 @@
   justify-content: center;
   padding: 20px;
   z-index: 9999;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-contenido {
   width: 100%;
   max-width: 600px;
+  max-height: calc(100vh - 40px);
   background: #ffffff;
   border-radius: 14px;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .modal-pequeno {
@@ -436,12 +446,17 @@
 }
 
 @media (max-width: 700px) {
+  .barra-filtros {
+    gap: 12px;
+  }
+
   .dos-columnas {
     grid-template-columns: 1fr;
   }
 
   .modal-contenido {
     max-width: 100%;
+    max-height: calc(100dvh - 24px);
   }
 
   .modal-acciones,
@@ -453,5 +468,22 @@
   .boton-secundario,
   .boton-peligro {
     width: 100%;
+  }
+
+  .modal-overlay {
+    align-items: flex-start;
+    padding: 12px;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .form-modal {
+    padding: 16px;
+  }
+
+  .modal-acciones {
+    padding: 0 16px 16px;
   }
 }
