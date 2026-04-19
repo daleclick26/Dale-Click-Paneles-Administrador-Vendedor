@@ -73,7 +73,6 @@ button {
 
 @media (max-width: 900px) {
   :root {
-    --sidebar-width: 86px;
     --topbar-height: 78px;
   }
 

@@ -90,10 +90,6 @@
 }
 
 @media (max-width: 900px) {
-  .sidebar {
-    width: 86px;
-  }
-
   .logo-container {
     height: 110px;
     padding: 12px 8px;
@@ -104,12 +100,12 @@
   }
 
   .menu-item {
-    justify-content: center;
+    justify-content: flex-start;
     padding: 12px 10px;
   }
 
   .menu-item span {
-    display: none;
+    white-space: nowrap;
   }
 
   .sidebar-footer {
