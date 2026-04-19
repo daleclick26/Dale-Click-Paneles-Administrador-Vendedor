@@ -1,19 +1,86 @@
 const db = require('../config/db');
 
-const USER_ID_TEMPORAL = 2;
-const BUSINESS_ID_TEMPORAL = 1;
+function getUsuarioSesion(req) {
+  return req.session?.usuario || null;
+}
 
-exports.renderPedidosPage = (req, res) => {
-  const businessID = BUSINESS_ID_TEMPORAL;
-
-  const usuarioQuery = `
-    SELECT userID, firstName, profileImageURL
+function getUsuarioActual(userID, callback) {
+  const query = `
+    SELECT
+      userID,
+      username,
+      firstName,
+      lastName,
+      email,
+      roleID,
+      profileImageURL
     FROM Users
-    WHERE userID = ? AND roleID = 2
+    WHERE userID = ?
     LIMIT 1
   `;
 
-  const productosQuery = `
+  db.query(query, [userID], (error, rows) => {
+    if (error) return callback(error);
+    callback(null, rows[0] || null);
+  });
+}
+
+function getBusinessByUser(userID, callback) {
+  const query = `
+    SELECT
+      businessID,
+      userID,
+      businessName
+    FROM BusinessProfiles
+    WHERE userID = ?
+    LIMIT 1
+  `;
+
+  db.query(query, [userID], (error, rows) => {
+    if (error) return callback(error);
+    callback(null, rows[0] || null);
+  });
+}
+
+function getContextoUsuarioNegocio(req, callback) {
+  const usuarioSesion = getUsuarioSesion(req);
+
+  if (!usuarioSesion?.userID) {
+    return callback(new Error('No hay sesiÃ³n activa.'));
+  }
+
+  getUsuarioActual(usuarioSesion.userID, (errorUsuario, usuario) => {
+    if (errorUsuario) return callback(errorUsuario);
+
+    if (!usuario) {
+      return callback(new Error('Usuario no encontrado.'));
+    }
+
+    getBusinessByUser(usuario.userID, (errorBusiness, business) => {
+      if (errorBusiness) return callback(errorBusiness);
+
+      if (!business) {
+        return callback(new Error('El usuario no tiene negocio asociado.'));
+      }
+
+      const usuarioLimpio = {
+        ...usuario,
+        profileImageURL:
+          usuario.profileImageURL && String(usuario.profileImageURL).trim() !== ''
+            ? usuario.profileImageURL
+            : null
+      };
+
+      callback(null, {
+        usuario: usuarioLimpio,
+        business
+      });
+    });
+  });
+}
+
+function getProductosByBusiness(businessID, callback) {
+  const query = `
     SELECT DISTINCT
       p.productID,
       p.productName
@@ -24,7 +91,14 @@ exports.renderPedidosPage = (req, res) => {
     ORDER BY p.productName ASC
   `;
 
-  const pedidosQuery = `
+  db.query(query, [businessID], (error, rows) => {
+    if (error) return callback(error);
+    callback(null, rows || []);
+  });
+}
+
+function getPedidosByBusiness(businessID, callback) {
+  const query = `
     SELECT
       o.orderID,
       o.orderDate,
@@ -48,21 +122,31 @@ exports.renderPedidosPage = (req, res) => {
     ORDER BY o.orderDate DESC, o.orderID DESC
   `;
 
-  db.query(usuarioQuery, [USER_ID_TEMPORAL], (errorUsuario, usuarioRows) => {
-    if (errorUsuario) {
-      console.error('Error al obtener usuario:', errorUsuario);
+  db.query(query, [businessID], (error, rows) => {
+    if (error) return callback(error);
+    callback(null, rows || []);
+  });
+}
+
+exports.renderPedidosPage = (req, res) => {
+  getContextoUsuarioNegocio(req, (contextoError, contexto) => {
+    if (contextoError) {
+      console.error('Error al cargar pedidos:', contextoError);
+
+      if (contextoError.message === 'No hay sesiÃ³n activa.') {
+        return res.redirect('/login');
+      }
+
       return res.status(500).send('Error al cargar pedidos');
     }
 
-    const usuario = usuarioRows[0] || null;
-
-    db.query(productosQuery, [businessID], (errorProductos, productos) => {
+    getProductosByBusiness(contexto.business.businessID, (errorProductos, productos) => {
       if (errorProductos) {
         console.error('Error al obtener productos para filtro:', errorProductos);
         return res.status(500).send('Error al cargar pedidos');
       }
 
-      db.query(pedidosQuery, [businessID], (errorPedidos, pedidos) => {
+      getPedidosByBusiness(contexto.business.businessID, (errorPedidos, pedidos) => {
         if (errorPedidos) {
           console.error('Error al obtener pedidos:', errorPedidos);
           return res.status(500).send('Error al cargar pedidos');
@@ -70,7 +154,7 @@ exports.renderPedidosPage = (req, res) => {
 
         return res.render('emprendedor/pedidos', {
           activePage: 'pedidos',
-          usuario,
+          usuario: contexto.usuario,
           productos,
           estados: ['Reservado', 'Entregado'],
           pedidos
@@ -81,26 +165,25 @@ exports.renderPedidosPage = (req, res) => {
 };
 
 exports.getProductosFiltro = (req, res) => {
-  const businessID = BUSINESS_ID_TEMPORAL;
+  getContextoUsuarioNegocio(req, (contextoError, contexto) => {
+    if (contextoError) {
+      console.error('Error al obtener contexto de productos en pedidos:', contextoError);
 
-  const query = `
-    SELECT DISTINCT
-      p.productID,
-      p.productName
-    FROM Products p
-    INNER JOIN OrderDetails od ON od.productID = p.productID
-    INNER JOIN Orders o ON o.orderID = od.orderID
-    WHERE o.businessID = ?
-    ORDER BY p.productName ASC
-  `;
+      if (contextoError.message === 'No hay sesiÃ³n activa.') {
+        return res.status(401).json({ error: 'SesiÃ³n no vÃ¡lida' });
+      }
 
-  db.query(query, [businessID], (error, results) => {
-    if (error) {
-      console.error('Error al obtener productos filtro:', error);
       return res.status(500).json({ error: 'Error al obtener productos' });
     }
 
-    return res.json(results);
+    getProductosByBusiness(contexto.business.businessID, (error, productos) => {
+      if (error) {
+        console.error('Error al obtener productos filtro:', error);
+        return res.status(500).json({ error: 'Error al obtener productos' });
+      }
+
+      return res.json(productos);
+    });
   });
 };
 
@@ -112,69 +195,65 @@ exports.getEstados = (req, res) => {
 };
 
 exports.getPedidos = (req, res) => {
-  const businessID = BUSINESS_ID_TEMPORAL;
+  getContextoUsuarioNegocio(req, (contextoError, contexto) => {
+    if (contextoError) {
+      console.error('Error al obtener contexto de pedidos:', contextoError);
 
-  const query = `
-    SELECT
-      o.orderID,
-      o.orderDate,
-      o.orderStatus,
-      od.orderDetailID,
-      od.quantity,
-      od.unitPrice,
-      p.productID,
-      p.productName,
-      u.userID,
-      u.firstName,
-      u.lastName,
-      u.email,
-      u.phone
-    FROM Orders o
-    INNER JOIN OrderDetails od ON od.orderID = o.orderID
-    INNER JOIN Products p ON p.productID = od.productID
-    INNER JOIN Users u ON u.userID = o.userID
-    WHERE o.businessID = ?
-      AND u.roleID = 1
-    ORDER BY o.orderDate DESC, o.orderID DESC
-  `;
+      if (contextoError.message === 'No hay sesiÃ³n activa.') {
+        return res.status(401).json({ error: 'SesiÃ³n no vÃ¡lida' });
+      }
 
-  db.query(query, [businessID], (error, results) => {
-    if (error) {
-      console.error('Error al obtener pedidos:', error);
       return res.status(500).json({ error: 'Error al obtener pedidos' });
     }
 
-    return res.json(results);
+    getPedidosByBusiness(contexto.business.businessID, (error, pedidos) => {
+      if (error) {
+        console.error('Error al obtener pedidos:', error);
+        return res.status(500).json({ error: 'Error al obtener pedidos' });
+      }
+
+      return res.json(pedidos);
+    });
   });
 };
 
 exports.updateEstadoPedido = (req, res) => {
   const { id } = req.params;
   const { orderStatus } = req.body;
-  const businessID = BUSINESS_ID_TEMPORAL;
-
   const estadosValidos = ['Reservado', 'Entregado'];
 
   if (!estadosValidos.includes(orderStatus)) {
-    return res.status(400).json({ error: 'Estado no válido' });
+    return res.status(400).json({ error: 'Estado no vÃ¡lido' });
   }
 
-  const query = `
-    UPDATE Orders
-    SET orderStatus = ?
-    WHERE orderID = ? AND businessID = ?
-  `;
+  getContextoUsuarioNegocio(req, (contextoError, contexto) => {
+    if (contextoError) {
+      console.error('Error al actualizar estado del pedido:', contextoError);
 
-  db.query(query, [orderStatus, id, businessID], (error, result) => {
-    if (error) {
-      console.error('Error al actualizar estado del pedido:', error);
+      if (contextoError.message === 'No hay sesiÃ³n activa.') {
+        return res.status(401).json({ error: 'SesiÃ³n no vÃ¡lida' });
+      }
+
       return res.status(500).json({ error: 'Error al actualizar pedido' });
     }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Pedido no encontrado' });
-    }
+    const query = `
+      UPDATE Orders
+      SET orderStatus = ?
+      WHERE orderID = ? AND businessID = ?
+    `;
 
-    return res.json({ message: 'Estado actualizado correctamente' });
+    db.query(query, [orderStatus, id, contexto.business.businessID], (error, result) => {
+      if (error) {
+        console.error('Error al actualizar estado del pedido:', error);
+        return res.status(500).json({ error: 'Error al actualizar pedido' });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: 'Pedido no encontrado' });
+      }
+
+      return res.json({ message: 'Estado actualizado correctamente' });
+    });
   });
 };

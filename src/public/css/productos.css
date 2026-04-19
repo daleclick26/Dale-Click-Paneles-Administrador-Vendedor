@@ -100,8 +100,8 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
-.boton-verde {
-  background: linear-gradient(180deg, #62c75a, #3cae43);
+.boton-rosa {
+  background: #ec8169;
 }
 
 .boton-azul {

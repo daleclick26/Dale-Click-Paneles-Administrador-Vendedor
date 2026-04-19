@@ -59,11 +59,6 @@ const {
 } = require('../controllers/admin/reportes.controller');
 
 const {
-  renderEvaluacionAdmin,
-  getEvaluacionAdminData
-} = require('../controllers/admin/evaluacion.controller');
-
-const {
   renderConfiguracionAdmin,
   updateConfiguracionAdmin,
   uploadFotoAdmin
@@ -99,9 +94,6 @@ router.get('/reportes', renderReportesAdmin);
 router.get('/reportes/data', getReportesAdminData);
 router.get('/reportes/detalles', getDetallesOrdenAdminData);
 router.get('/reportes/export/:dias', exportReportesCsv);
-
-router.get('/evaluacion', renderEvaluacionAdmin);
-router.get('/evaluacion/data', getEvaluacionAdminData);
 
 router.get('/configuracion', renderConfiguracionAdmin);
 router.put('/configuracion', updateConfiguracionAdmin);
