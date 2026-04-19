@@ -15,7 +15,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Sesiones
 app.use(session({
-  secret: 'daleclick-secret',
+  /*secret: 'daleclick-secret',*/
+  secret: process.env.SESSION_SECRET, 
   resave: false,
   saveUninitialized: false
 }));
