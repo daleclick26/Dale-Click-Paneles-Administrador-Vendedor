@@ -22,7 +22,10 @@ const {
   getNegociosAdminData,
   getNegociosFormData,
   createNegocioAdmin,
-  createUniversidadAdmin
+  createUniversidadAdmin,
+  getUniversidadesAdmin,
+  getUniversidadById,
+  updateUniversidadAdmin
 } = require('../controllers/admin/negocios.controller');
 
 const {
@@ -68,6 +71,9 @@ router.get('/negocios', renderNegociosAdmin);
 router.get('/negocios/data', getNegociosAdminData);
 router.get('/negocios/form-data', getNegociosFormData);
 router.post('/negocios', createNegocioAdmin);
+router.get('/universidades', getUniversidadesAdmin);
+router.get('/universidades/:id', getUniversidadById);
+router.put('/universidades/:id', updateUniversidadAdmin);
 router.post('/universidades', createUniversidadAdmin);
 
 router.get('/membresias', renderMembresiasAdmin);

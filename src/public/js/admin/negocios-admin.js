@@ -18,6 +18,10 @@ const formCrearUniversidad = document.getElementById('formCrearUniversidad');
 
 const selectUserID = document.getElementById('negocioUserID');
 const selectCategoryID = document.getElementById('negocioCategoryID');
+const selectExistingUniversity = document.getElementById('selectExistingUniversity');
+const btnActualizarUniversidad = document.getElementById('btnActualizarUniversidad');
+const inputUniversityID = document.getElementById('universityID');
+const inputUniversityLogoURL = document.getElementById('universityLogoURL');
 
 function abrirModal(modal) {
   modal.classList.remove('hidden');
@@ -154,7 +158,31 @@ btnOpenCrearNegocio.addEventListener('click', async () => {
   abrirModal(modalNegocioOverlay);
 });
 
-btnOpenCrearUniversidad.addEventListener('click', () => {
+btnOpenCrearUniversidad.addEventListener('click', async () => {
+  // preparar modal: resetear y cargar lista de universidades para edición
+  try {
+    formCrearUniversidad.reset();
+    if (inputUniversityID) inputUniversityID.value = '';
+    if (btnActualizarUniversidad) btnActualizarUniversidad.classList.add('hidden');
+
+    const res = await fetch('/admin/universidades');
+    const list = await res.json();
+
+    if (selectExistingUniversity) {
+      selectExistingUniversity.innerHTML = '<option value="">Selecciona una universidad</option>';
+      if (Array.isArray(list)) {
+        list.forEach((u) => {
+          const option = document.createElement('option');
+          option.value = u.universityID;
+          option.textContent = u.universityName;
+          selectExistingUniversity.appendChild(option);
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Error cargando universidades:', error);
+  }
+
   abrirModal(modalUniversidadOverlay);
 });
 
@@ -234,5 +262,79 @@ formCrearUniversidad.addEventListener('submit', async (e) => {
     alert('Ocurrió un error guardando la universidad.');
   }
 });
+
+// Manejar selección de universidad para editar
+if (selectExistingUniversity) {
+  selectExistingUniversity.addEventListener('change', async () => {
+    const id = selectExistingUniversity.value;
+    if (!id) {
+      formCrearUniversidad.reset();
+      if (inputUniversityID) inputUniversityID.value = '';
+      if (btnActualizarUniversidad) btnActualizarUniversidad.classList.add('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/admin/universidades/${id}`);
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        alert(data.message || 'No se pudo cargar la universidad.');
+        return;
+      }
+
+      const uni = data.university || {};
+      document.getElementById('universityName').value = uni.universityName || '';
+      document.getElementById('universityDepartment').value = uni.department || '';
+      document.getElementById('universityCity').value = uni.city || '';
+      document.getElementById('universityAddressLine').value = uni.addressLine || '';
+      document.getElementById('universityReferenceNote').value = uni.referenceNote || '';
+      if (inputUniversityLogoURL) inputUniversityLogoURL.value = uni.logoURL || '';
+      if (inputUniversityID) inputUniversityID.value = uni.universityID || '';
+      if (btnActualizarUniversidad) btnActualizarUniversidad.classList.remove('hidden');
+    } catch (error) {
+      console.error('Error cargando universidad:', error);
+      alert('No se pudo cargar la universidad seleccionada.');
+    }
+  });
+}
+
+// Actualizar universidad seleccionada
+if (btnActualizarUniversidad) {
+  btnActualizarUniversidad.addEventListener('click', async () => {
+    const id = inputUniversityID?.value;
+    if (!id) {
+      alert('Selecciona una universidad para actualizar.');
+      return;
+    }
+
+    const formData = new FormData(formCrearUniversidad);
+    const payload = Object.fromEntries(formData.entries());
+
+    try {
+      const res = await fetch(`/admin/universidades/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        alert(data.message || 'No se pudo actualizar la universidad.');
+        return;
+      }
+
+      alert(data.message || 'Universidad actualizada correctamente.');
+      formCrearUniversidad.reset();
+      if (inputUniversityID) inputUniversityID.value = '';
+      if (btnActualizarUniversidad) btnActualizarUniversidad.classList.add('hidden');
+      cerrarModal(modalUniversidadOverlay);
+    } catch (error) {
+      console.error('Error actualizando universidad:', error);
+      alert('Ocurrió un error actualizando la universidad.');
+    }
+  });
+}
 
 cargarNegocios();

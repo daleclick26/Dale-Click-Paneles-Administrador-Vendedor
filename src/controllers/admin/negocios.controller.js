@@ -298,7 +298,8 @@ const createUniversidadAdmin = (req, res) => {
     department,
     city,
     addressLine,
-    referenceNote
+    referenceNote,
+    logoURL
   } = req.body;
 
   if (!universityName || !department || !city || !addressLine) {
@@ -314,8 +315,9 @@ const createUniversidadAdmin = (req, res) => {
       department,
       city,
       addressLine,
-      referenceNote
-    ) VALUES (?, ?, ?, ?, ?)
+      referenceNote,
+      logoURL
+    ) VALUES (?, ?, ?, ?, ?, ?)
   `;
 
   const params = [
@@ -323,7 +325,8 @@ const createUniversidadAdmin = (req, res) => {
     department,
     city,
     addressLine,
-    referenceNote || null
+    referenceNote || null,
+    logoURL || null
   ];
 
   db.query(sqlInsert, params, (errInsert, result) => {
@@ -343,10 +346,97 @@ const createUniversidadAdmin = (req, res) => {
   });
 };
 
+const getUniversidadesAdmin = (req, res) => {
+  const sql = `
+    SELECT
+      universityID,
+      universityName
+    FROM Universities
+    ORDER BY universityName ASC
+  `;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      console.error('Error getUniversidadesAdmin:', err);
+      return res.status(500).json({ ok: false, message: 'No se pudieron cargar las universidades.' });
+    }
+
+    return res.json(rows);
+  });
+};
+
+const getUniversidadById = (req, res) => {
+  const { id } = req.params;
+  const sql = `
+    SELECT
+      universityID,
+      universityName,
+      department,
+      city,
+      addressLine,
+      referenceNote,
+      logoURL
+    FROM Universities
+    WHERE universityID = ?
+    LIMIT 1
+  `;
+
+  db.query(sql, [id], (err, rows) => {
+    if (err) {
+      console.error('Error getUniversidadById:', err);
+      return res.status(500).json({ ok: false, message: 'No se pudo obtener la universidad.' });
+    }
+
+    if (!rows[0]) {
+      return res.status(404).json({ ok: false, message: 'Universidad no encontrada.' });
+    }
+
+    return res.json({ ok: true, university: rows[0] });
+  });
+};
+
+const updateUniversidadAdmin = (req, res) => {
+  const { id } = req.params;
+  const { universityName, department, city, addressLine, referenceNote, logoURL } = req.body;
+
+  if (!universityName || !department || !city || !addressLine) {
+    return res.status(400).json({ ok: false, message: 'Completa los campos obligatorios de la universidad.' });
+  }
+
+  const sqlUpdate = `
+    UPDATE Universities SET
+      universityName = ?,
+      department = ?,
+      city = ?,
+      addressLine = ?,
+      referenceNote = ?,
+      logoURL = ?
+    WHERE universityID = ?
+  `;
+
+  const params = [universityName, department, city, addressLine, referenceNote || null, logoURL || null, id];
+
+  db.query(sqlUpdate, params, (errUpdate, result) => {
+    if (errUpdate) {
+      console.error('Error updateUniversidadAdmin:', errUpdate);
+      return res.status(500).json({ ok: false, message: 'No se pudo actualizar la universidad.' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ ok: false, message: 'Universidad no encontrada.' });
+    }
+
+    return res.json({ ok: true, message: 'Universidad actualizada correctamente.' });
+  });
+};
+
 module.exports = {
   renderNegociosAdmin,
   getNegociosAdminData,
   getNegociosFormData,
   createNegocioAdmin,
-  createUniversidadAdmin
+  createUniversidadAdmin,
+  getUniversidadesAdmin,
+  getUniversidadById,
+  updateUniversidadAdmin
 };

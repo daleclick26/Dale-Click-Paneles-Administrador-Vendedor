@@ -185,7 +185,16 @@
       </div>
 
       <form id="formCrearUniversidad" class="modal-form">
+        <input type="hidden" id="universityID" name="universityID" value="">
+
         <div class="form-grid">
+          <div class="form-group form-group--full">
+            <label for="selectExistingUniversity">Editar universidad existente</label>
+            <select id="selectExistingUniversity" class="negocios-input">
+              <option value="">Selecciona una universidad</option>
+            </select>
+          </div>
+
           <div class="form-group">
             <label for="universityName">Nombre de la universidad</label>
             <input id="universityName" name="universityName" class="negocios-input" type="text" required>
@@ -207,6 +216,11 @@
           </div>
 
           <div class="form-group form-group--full">
+            <label for="universityLogoURL">Logo URL</label>
+            <input id="universityLogoURL" name="logoURL" class="negocios-input" type="url" placeholder="https://...">
+          </div>
+
+          <div class="form-group form-group--full">
             <label for="universityReferenceNote">Referencia</label>
             <input id="universityReferenceNote" name="referenceNote" class="negocios-input" type="text">
           </div>
@@ -214,6 +228,7 @@
 
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" id="btnCancelCrearUniversidad">Cancelar</button>
+          <button type="button" class="btn btn-primary hidden" id="btnActualizarUniversidad">Actualizar</button>
           <button type="submit" class="btn btn-primary">Guardar universidad</button>
         </div>
       </form>
