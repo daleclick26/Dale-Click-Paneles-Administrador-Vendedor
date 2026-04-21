@@ -411,6 +411,12 @@
   font-family: inherit;
 }
 
+.modal-form input[readonly],
+.modal-form input:disabled {
+  color: var(--usuarios-muted);
+  cursor: not-allowed;
+}
+
 .modal-form textarea {
   resize: vertical;
   min-height: 110px;

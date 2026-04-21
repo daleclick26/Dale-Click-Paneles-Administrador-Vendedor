@@ -43,6 +43,7 @@ const elements = {
   studentUserID: document.getElementById('studentUserID'),
 
   editUserID: document.getElementById('editUserID'),
+  editUsername: document.getElementById('editUsername'),
   editFirstName: document.getElementById('editFirstName'),
   editLastName: document.getElementById('editLastName'),
   editEmail: document.getElementById('editEmail'),
@@ -223,6 +224,7 @@ function fillEditForm(userID) {
   state.editingUser = user;
 
   elements.editUserID.value = user.userID;
+  elements.editUsername.value = user.username || '';
   elements.editFirstName.value = user.firstName || '';
   elements.editLastName.value = user.lastName || '';
   elements.editEmail.value = user.email || '';
